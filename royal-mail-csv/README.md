@@ -1,97 +1,99 @@
 <!-- readme-skill:begin hero -->
 # P9 Royal Mail CSV Processor
 
-在 [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) 页面右下角添加 **Process CSV** 按钮，将 Cardmarket 导出的 CSV 在浏览器中处理并下载。当前版本：**1.1.1**。脚本界面为英文。
+[English](README.md) · [简体中文](README.zh-CN.md)
 
-[安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) · [脚本源码](royal-mail-csv.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.md)
+Adds a **Process CSV** button to the bottom-right corner of [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) to process and download Cardmarket CSV exports in your browser. Current version: **1.1.1**. The script's interface is in English.
+
+[Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) · [Source](royal-mail-csv.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin installation -->
-## 安装
+## Installation
 
-1. 安装并启用 [Tampermonkey](https://www.tampermonkey.net/)。
-2. 点击上方「安装脚本」，确认安装或更新现有脚本。
-3. 刷新已登录的 Royal Mail Click & Drop 页面，右下角会出现 **Process CSV**。
+1. Install and enable [Tampermonkey](https://www.tampermonkey.net/).
+2. Follow **Install script** above and confirm installation or an update to the existing script.
+3. Reload your signed-in Royal Mail Click & Drop page. **Process CSV** appears in the bottom-right corner.
 
-手动复制安装的旧版本需通过上述链接安装一次，以获得本仓库的自动更新地址。检查 Tampermonkey 中只保留一个启用的副本，并按需要启用更新检查和自动安装。脚本无需构建、npm 依赖、服务器或 API key。
+Older versions installed by manually copying the source need a one-time installation through the link above to obtain this repository's automatic update URLs. Keep only one enabled copy in Tampermonkey and enable update checks and automatic installation as desired. The script requires no build step, npm dependencies, server, or API key.
 <!-- readme-skill:end installation -->
 
 <!-- readme-skill:begin usage -->
-## 使用
+## Usage
 
-1. 点击 **Process CSV** 展开窗口。
-2. 选择或拖入 UTF-8 编码的 Cardmarket CSV，文件上限为 20 MB。
-3. 查看上传、保留、删除的订单数量、警告和前五条订单预览。
-4. 按需切换三个处理选项；选项改变后会重新处理原始文件。
-5. 点击 **Download processed CSV**，例如 `orders.csv` 下载为 `processed-orders.csv`。
+1. Click **Process CSV** to expand the panel.
+2. Choose or drop a UTF-8 Cardmarket CSV file, up to 20 MB.
+3. Review the uploaded, kept, and removed order counts, warnings, and preview of the first five orders.
+4. Toggle any of the three processing options as needed; changing an option reprocesses the original file.
+5. Click **Download processed CSV**. For example, `orders.csv` downloads as `processed-orders.csv`.
 
 ```mermaid
 flowchart TD
-    A[选择或拖入 Cardmarket CSV] --> B[按选项过滤并转换字段]
-    B --> C[查看数量、警告和预览]
-    C --> D[下载 processed- 前缀的 CSV]
-    D --> E[在 Royal Mail 手动导入]
+    A[Choose or drop a Cardmarket CSV] --> B[Filter and convert fields using selected options]
+    B --> C[Review counts, warnings, and preview]
+    C --> D[Download the CSV with a processed- prefix]
+    D --> E[Import it into Royal Mail manually]
 ```
 
-CSV 在当前浏览器内处理；脚本不会上传客户数据、提交订单或自动导入 Royal Mail。收起窗口会保留当前结果，刷新网页后需要重新选择文件。
+CSV files are processed in the current browser. The script does not upload customer data, submit orders, or automatically import them into Royal Mail. Collapsing the panel preserves the current result; reloading the page requires choosing the file again.
 <!-- readme-skill:end usage -->
 
 <!-- readme-skill:begin mapping -->
-## 订单 reference 与面单 SKU
+## Order reference and printed SKU
 
-| 输出列 | 内容 | 示例 | Royal Mail 导入映射 |
+| Output column | Value | Example | Royal Mail import mapping |
 | --- | --- | --- | --- |
-| `new_reference` | Cardmarket 的 `idOrder`，以文本保留 | `001234` | Order information → Order reference |
+| `new_reference` | Cardmarket `idOrder`, preserved as text | `001234` | Order information → Order reference |
 | `SKU` | `PID (articles)` | `A17 (20)` | Product information → Identifier (SKU) |
 
-首次导入时，将新增 `SKU` 列映射到 **Identifier (SKU)**；保持 `new_reference` 映射到 **Order reference**。原始的 `PID`、`articles` 和 `idOrder` 列仍会保留。
+On the first import, map the new `SKU` column to **Identifier (SKU)** and keep `new_reference` mapped to **Order reference**. The original `PID`, `articles`, and `idOrder` columns remain in the file.
 
-在 Royal Mail 的 **Settings → Label format** 中启用 **Include product identifiers (SKUs) on label**，并保存。打印字段和格式限制可查阅 [Royal Mail 标签说明](https://help.parcel.royalmail.com/hc/en-gb/articles/115004866953-Choosing-your-label-format) 和 [CSV 字段规格](https://help.parcel.royalmail.com/hc/en-gb/articles/360000250093-Order-Import-spreadsheet-field-specifications)。脚本不会自动修改账户设置或重写已有订单及面单。
+In Royal Mail's **Settings → Label format**, enable **Include product identifiers (SKUs) on label** and save. See the [Royal Mail label guide](https://help.parcel.royalmail.com/hc/en-gb/articles/115004866953-Choosing-your-label-format) and [CSV field specifications](https://help.parcel.royalmail.com/hc/en-gb/articles/360000250093-Order-Import-spreadsheet-field-specifications) for print fields and format limits. The script does not automatically change account settings or rewrite existing orders and labels.
 
-缺失订单号会阻止处理；缺失 PID 或 articles 会生成空 SKU 并显示警告。SKU 超过 43 个字符时保留完整值，同时提示核对面单上的截断情况。实际 SKU 打印效果需要在完成导入后核对。
+A missing order number prevents processing. A missing PID or articles value produces a blank SKU with a warning. SKUs longer than 43 characters are preserved in full, with a warning to check label truncation. Verify the actual SKU printout after importing an order.
 <!-- readme-skill:end mapping -->
 
 <!-- readme-skill:begin rules -->
-## 处理规则
+## Processing rules
 
-三个选项默认全部启用：
+All three options are enabled by default:
 
-- **Remove orders with issues**：只保留 `issues` 为空、缺失值或严格等于 `[]` 的订单。
-- **Remove non-ASCII characters from addresses**：清理姓名、附加地址、街道、城市和邮编中的非 ASCII 字符。字符直接删除，不作转写，例如 `José` 会变成 `Jos`。
-- **Prepare shipping services, reference and SKU**：生成或覆盖 `serviceCode`、`weight`、`format`、`new_reference` 和 `SKU`。关闭该选项可保留已有生成列的内容；缺失值清理仍然执行。
+- **Remove orders with issues**: retain only orders whose `issues` value is empty, a missing value, or exactly `[]`.
+- **Remove non-ASCII characters from addresses**: clean the name, extra address, street, city, and postcode fields. Characters are deleted without transliteration; for example, `José` becomes `Jos`.
+- **Prepare shipping services, reference and SKU**: generate or overwrite `serviceCode`, `weight`, `format`, `new_reference`, and `SKU`. Disable this option to preserve existing generated column values; missing-value cleanup still runs.
 
-保留原始列顺序和其他字段，新生成列在不存在时追加。字段按文本读取，保留订单号、电话、邮编和数量中的前导零；清空与原处理规则一致的缺失值字符串。
+The original column order and unrelated fields are preserved, and missing generated columns are appended. Fields are read as text to retain leading zeroes in order numbers, telephone numbers, postcodes, and counts. Missing-value strings are cleared consistently with the original processing rules.
 
-| shippingMethod | 条件 | serviceCode | weight | format |
+| shippingMethod | Condition | serviceCode | weight | format |
 | --- | --- | --- | --- | --- |
-| UK Standard Letter (2nd Class) | 全部 | BPL2 | 0.1 | Letter |
+| UK Standard Letter (2nd Class) | All | BPL2 | 0.1 | Letter |
 | UK Standard Large Letter (2nd Class) | articles > 50 | BPL2 | 0.3 | Large letter |
-| UK Standard Large Letter (2nd Class) | 其他有效数量或空值 | BPL2 | 0.1 | Letter |
-| UK Standard Letter (1st Class) | 全部 | BPL1 | 0.1 | Letter |
-| UK Standard Large Letter (1st Class) | 全部 | BPL1 | 0.1 | Letter |
-| UK Signed Large Letter (2nd Class Signed For) | 全部 | TRS48 | 0.1 | Large letter |
-| UK Signed Large Letter (1st Class Signed For) | 全部 | TRN24 | 0.1 | Large letter |
-| Tracked 48 (Real Tracked Service) | 全部 | TRS48 | 0.1 | Large letter |
-| Tracked 48 LBT (Real Tracked Service) | 全部 | TRS48 | 0.1 | Large letter |
-| UK Confirmed Large Letter (2nd Class Signed For) | 全部 | TRS48 | 0.1 | Large letter |
-| UK Signed Large Letter (2nd Class Signed For) (Online) | 全部 | TRS48 | 0.1 | Large letter |
-| Tracked 24 (Real Tracked Service) | 全部 | TRN24 | 0.1 | Large letter |
-| Special Delivery 1PM insured for 750 GBP | 全部 | SD1 | 0.1 | Large letter |
+| UK Standard Large Letter (2nd Class) | Other valid counts or empty | BPL2 | 0.1 | Letter |
+| UK Standard Letter (1st Class) | All | BPL1 | 0.1 | Letter |
+| UK Standard Large Letter (1st Class) | All | BPL1 | 0.1 | Letter |
+| UK Signed Large Letter (2nd Class Signed For) | All | TRS48 | 0.1 | Large letter |
+| UK Signed Large Letter (1st Class Signed For) | All | TRN24 | 0.1 | Large letter |
+| Tracked 48 (Real Tracked Service) | All | TRS48 | 0.1 | Large letter |
+| Tracked 48 LBT (Real Tracked Service) | All | TRS48 | 0.1 | Large letter |
+| UK Confirmed Large Letter (2nd Class Signed For) | All | TRS48 | 0.1 | Large letter |
+| UK Signed Large Letter (2nd Class Signed For) (Online) | All | TRS48 | 0.1 | Large letter |
+| Tracked 24 (Real Tracked Service) | All | TRN24 | 0.1 | Large letter |
+| Special Delivery 1PM insured for 750 GBP | All | SD1 | 0.1 | Large letter |
 
-无法匹配的邮寄方式会留下空白的服务、重量和格式，并显示警告；导入前应检查这些订单。所有订单被过滤时，可下载仅含列名的 CSV，界面会显示警告。
+Unmatched shipping methods leave the service code, weight, and format blank and produce a warning; check these orders before importing. If every order is filtered out, the script allows a header-only CSV download and displays a warning.
 <!-- readme-skill:end rules -->
 
 <!-- readme-skill:begin development -->
-## 本地检查
+## Local checks
 
-在本目录中运行，使用 Node.js 内置测试运行器，无需安装 npm 依赖：
+Run from this directory using Node.js's built-in test runner. No npm dependencies are required:
 
 ```sh
 npm run check
 npm test
 ```
 
-`test/rules.test.cjs` 包含 41 项回归测试，覆盖 CSV 解析、筛选、地址清理、服务映射、独立 reference 与 SKU、缺失数据和重复处理等场景。`test/fixtures/orders.csv` 仅包含虚构订单。
+`test/rules.test.cjs` contains 41 regression tests covering CSV parsing, filtering, address cleaning, shipping service mappings, separate references and SKUs, missing data, and repeated processing. `test/fixtures/orders.csv` contains fictional orders only.
 
-1.1.1 只修改分发元数据和版本号，CSV 处理和界面逻辑沿用 1.1.0。
+Version 1.1.1 changes only distribution metadata and the version number; CSV processing and interface behavior are inherited from 1.1.0.
 <!-- readme-skill:end development -->
