@@ -1,30 +1,30 @@
 # CHANGELOG
 
-按脚本分别记录版本。脚本的更新判断以其头部的 `@version` 为准。
+Versions are tracked separately for each userscript. Update checks use the `@version` in the userscript header.
 
 ## 2026-11-19
 
 ### tcgpowertools-tracking — 1.1.2
 
-- 将已验证的 P9 Order Tools 收录至独立脚本目录，提供英文菜单、PDF 上传预览、tracking 批量保存和原生操作后的自动刷新设置。
-- 兼容旧合并 reference 和新分离 reference/SKU 格式，正确处理 `20x PID (quantity)` 数量前缀。
-- 保留脚本名称和 namespace，将主页及更新地址指向本仓库 `main` 分支；原本没有更新来源的本地副本需通过新链接安装一次。
-- 添加独立中英文说明、27 项使用虚构数据的单元检查，以及两项通过私有文件运行的 PDF 集成检查。
-- 不收录实际面单、订单记录、截图或针对具体账户的测试 PDF 生成器。
+- Added the verified P9 Order Tools in its own script directory, with an English menu, PDF upload preview, batch tracking saves, and automatic refresh settings for native order actions.
+- Support both the original combined reference and the split reference/SKU format, including the `20x PID (quantity)` prefix.
+- Preserve the script name and namespace, and point the homepage and update URLs to this repository's `main` branch. Local copies without an update source need a one-time installation through the new link.
+- Added independent English and Chinese guides, 27 unit checks using fictional data, and two PDF integration checks that use private local files.
+- Kept actual shipping labels, order records, screenshots, and account-specific test PDF generators out of the repository.
 
 ### tcgpowertools-block-redirect — 1.0.2
 
-- 从独立仓库 `tjx0726/tcgpowertools-block-redirect` 收录到独立脚本文件夹。
-- 将主页、`@updateURL` 和 `@downloadURL` 指向 `P9_Tampermonkey` 中的新位置。
-- 将版本从 1.0.1 提高到 1.0.2，保持名称、namespace、执行范围和重定向拦截逻辑一致。
-- 在旧仓库原路径保留相同的 1.0.2 迁移脚本：旧安装更新后改为跟随新仓库。
-- 补充安装、迁移条件及旧地址保留要求；未配置更新来源的手动副本需一次性安装新版。
+- Added the script from `tjx0726/tcgpowertools-block-redirect` in its own script folder.
+- Point the homepage, `@updateURL`, and `@downloadURL` to the new location in `P9_Tampermonkey`.
+- Increased the version from 1.0.1 to 1.0.2, preserving the name, namespace, execution scope, and redirect-blocking logic.
+- Retained the identical 1.0.2 migration script at the old repository's original path so existing installations switch to the new repository after updating.
+- Documented installation, migration requirements, and retention of the old URL. Manually installed copies without an update source need a one-time installation of the new version.
 
 ### royal-mail-csv — 1.1.1
 
-- 首次发布到公开仓库 `tjx0726/P9_Tampermonkey`，基于已完成的本地版本 1.1.0。
-- 添加指向本仓库 `main` 分支的 `@updateURL`、`@downloadURL` 和脚本主页链接。
-- 保留现有脚本名称和 namespace，便于更新已有安装。
-- 保留 1.1.0 的处理逻辑：订单 reference 使用 Cardmarket `idOrder`，SKU 使用 `PID (articles)`，并保留既有过滤、地址清理和邮寄服务映射。
-- 收录原有 41 项回归测试及虚构 CSV 样例。
-- 添加仓库总览、安装入口、自动更新说明和独立脚本文档。
+- First published in the public `tjx0726/P9_Tampermonkey` repository, based on the completed local version 1.1.0.
+- Added `@updateURL`, `@downloadURL`, and a script homepage link pointing to this repository's `main` branch.
+- Preserve the existing script name and namespace to support updates to existing installations.
+- Preserve the 1.1.0 processing logic: use the Cardmarket `idOrder` as the order reference and `PID (articles)` as the SKU, retaining the existing filtering, address cleanup, and shipping service mappings.
+- Included the existing 41 regression tests and a fictional CSV fixture.
+- Added a repository overview, installation links, automatic update instructions, and independent script documentation.

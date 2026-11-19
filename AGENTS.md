@@ -24,3 +24,7 @@ Keep script-specific documentation and supporting files in that script's folder.
 - A Simplified Chinese edition, `README.zh-CN.md`, is optional.
 - Preserve existing Chinese editions and keep them consistent with the English documentation when making related changes.
 - When both editions exist, provide language-switching links between them and keep commands, versions, installation URLs, and technical facts aligned.
+
+## Changelog language
+
+Maintain `CHANGELOG.md` in English only, with no translated editions.
