@@ -1,69 +1,61 @@
 <!-- readme-skill:begin hero -->
-# TCG PowerTools - Stay on Legacy App
+# TCG PowerTools - Stay on Legacy App（Deprecated）
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-阻止旧版 [TCG PowerTools](https://app.tcgpowertools.com/) 页面跳转到 `https://new.tcgpowertools.com/login-redirect`。当前版本：**1.0.3**。
+**Deprecated：已弃用，新安装入口已禁用。** 此功能已合并至 [P9 TCGPowerTools](../p9-tcgpowertools/README.zh-CN.md)，并默认开启。
 
-此功能现已合并至 [P9 TCGPowerTools](../p9-tcgpowertools/README.zh-CN.md)，默认开启。新安装请使用合并插件，并停用此独立脚本。旧文件和更新地址为兼容已有安装而保留；1.0.3 检测到合并插件时让出控制，由共享 Settings 决定是否拦截。
+~~安装脚本~~（已禁用 — deprecated） · [替代插件](../p9-tcgpowertools/README.zh-CN.md) · [迁移版源码](tcgpowertools-stay-on-legacy.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.zh-CN.md)
 
-[安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [脚本源码](tcgpowertools-stay-on-legacy.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.md)
+迁移版本：**1.2.3**。原有更新路径现提供完整的 P9 TCGPowerTools 迁移副本，采用合并插件的名称、namespace 和正式更新／下载地址。
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin installation -->
-## 安装与使用
+## 已有安装
 
-1. 在支持 Navigation API 的 Chrome 或 Chromium 浏览器中启用 [Tampermonkey](https://www.tampermonkey.net/)。
-2. 点击「安装脚本」，在 Tampermonkey 中确认安装或更新。
-3. 确保脚本已启用，且 Tampermonkey 可访问 `https://app.tcgpowertools.com/*`；按浏览器要求开启 **Allow User Scripts** 或相应的用户脚本执行权限。
-4. 直接打开旧版应用并刷新页面。
-
-脚本在 `document-start` 阶段注册 Navigation API 的 `navigate` 监听器。目标是新版的 `/login-redirect` 或 `/login-redirect/` 且导航可取消时，调用 `preventDefault()`。
+1. 保持 Tampermonkey 的更新检查开启；如需自动安装，同时启用 **Automatic installation**。
+2. 等待下一次更新检查，或对已有脚本执行 **Check for updates**，无需另行安装。
+3. 如果 Tampermonkey 显示更新来源或权限确认，请确认更新。替代插件还支持新版域名，并增加 tracking、库存和共享设置功能。
+4. 更新后刷新网站，核对脚本名称为 **P9 TCGPowerTools**、版本为 **1.2.3** 或更高，更新和下载地址以 `P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js` 结尾。
 
 ```mermaid
 flowchart TD
-    A[安装或更新脚本] --> B[打开旧版 TCG PowerTools]
-    B --> C[脚本在页面启动时监听导航]
-    C --> D[取消指向新版 login-redirect 的可取消导航]
+    A[已有拦截脚本检查旧更新地址] --> B[发现迁移版本 1.2.3]
+    B --> C[Tampermonkey 安装 P9 TCGPowerTools]
+    C --> D[后续更新检查正式插件地址]
 ```
 
-禁用脚本并刷新网页即可停止拦截。脚本无需构建、服务器或 API key。
+新安装请使用上方替代插件的说明，不要安装这个已弃用的入口。
 <!-- readme-skill:end installation -->
 
 <!-- readme-skill:begin migration -->
-## 已安装旧仓库版本的机器
+## 原仓库安装
 
-[原仓库](https://github.com/tjx0726/tcgpowertools-block-redirect) 的原始脚本路径继续提供 **1.0.2**。旧版 `1.0.1` 安装可先从旧地址发现更新；安装后，其 `@updateURL` 和 `@downloadURL` 会改为本仓库中的脚本地址。脚本名称和 namespace 保持不变。
+[原仓库](https://github.com/tjx0726/tcgpowertools-block-redirect) 继续提供 **1.0.2**，其更新和下载地址指向本仓库保留的迁移路径。仍使用原始地址的 `1.0.1` 安装会先更新到 `1.0.2`，再通过后续更新检查发现完整插件迁移版。已使用本仓库地址的 `1.0.2` 或 `1.0.3` 安装可直接发现迁移。
 
-- Tampermonkey 需要启用更新检查；如需自动安装，需同时启用 **Automatic installation**。
-- 迁移发生在各机器下一次检查并安装更新时。可以手动执行「检查更新」提前触发检查。
-- 安装后核对版本至少为 `1.0.2`，更新地址包含 `P9_Tampermonkey/main/tcgpowertools-block-redirect/`。
-- 没有更新来源的手动副本，需要通过本页安装链接更新一次；本地改过的副本或被手动覆盖的更新地址也可能需要手动处理。
-- 保留旧仓库的原始文件，供长期未联网的机器以后迁移。后续版本只需在新仓库维护。
+为长期未联网的机器保留两处旧路径。发布迁移文件不代表每台机器已经完成安装。
 
-该迁移机制依据 [Tampermonkey 维护者对更新地址迁移的说明](https://github.com/Tampermonkey/tampermonkey/issues/1904)。仓库发布完成并不能证明每台机器已完成安装。
+更新机制依据 Tampermonkey 维护者对[脚本重命名及来源变化确认](https://github.com/Tampermonkey/tampermonkey/discussions/1542)和[更新地址迁移](https://github.com/Tampermonkey/tampermonkey/issues/1904)的说明。
 <!-- readme-skill:end migration -->
 
 <!-- readme-skill:begin limitations -->
-## 范围与限制
+## 迁移限制
 
-- 仅在 `app.tcgpowertools.com` 运行，阻止导航到新版应用指定的 login-redirect 路径，包括从旧页面点击该目标链接；其他目标不受影响。
-- 使用浏览器的 Navigation API；不支持该 API 时会在控制台报告错误，不会安装拦截监听器。
-- 无法阻止页面加载前的服务端重定向，或浏览器标为不可取消的导航。实际注入时机取决于浏览器和 Tampermonkey 配置。
-- 不读取 cookies，不修改账户标记，不修改网站部署代码，也不会在控制台输出目标 URL 中的 token。
-- 仅阻止跳转。若网站自身存在重复更新用户或循环请求等问题，需要另行处理；出现问题时可先禁用脚本并刷新页面。
+- 更新检查与自动安装取决于各浏览器的 Tampermonkey 设置，确认弹窗由扩展控制。
+- 没有更新来源的粘贴／本地副本、本地修改过的脚本或被覆盖的更新地址，可能需要按照替代插件说明手动更新一次。
+- 已禁用的安装仍受 Tampermonkey 启用／禁用状态控制；迁移不会强制启用。
+- 如果已经安装合并插件，迁移后只保留一个启用的副本。共享运行时保护会阻止重复界面和请求 hooks，但不会删除扩展中的安装记录。
+- 迁移后的脚本采用完整合并插件，包括默认开启的 **Stay on Legacy App**；支持域名、设置和功能限制见替代插件说明。
 <!-- readme-skill:end limitations -->
 
 <!-- readme-skill:begin maintenance -->
 ## 本地检查与维护
 
-在本目录运行：
-
 ```sh
 node --check tcgpowertools-stay-on-legacy.user.js
+cd ../p9-tcgpowertools
+npm test
 ```
 
-1.0.3 加入与合并插件共存的保护。原仓库继续保留迁移版本 1.0.2，本仓库的稳定更新地址提供后续兼容更新。各机器的实际安装状态及扩展注入时机需在对应浏览器核对。
-
-后续更新此目录中的脚本时，提高 `@version`，保留名称、namespace 和更新地址，并同步根目录的 README 及 CHANGELOG。
+保留并冻结这个完整的 **1.2.3** 迁移副本。后续功能版本在 `p9-tcgpowertools/` 维护，已迁移的安装跟随正式更新地址。不要删除旧文件，也不要恢复其安装链接。回归检查覆盖迁移元数据、完整插件独立启动，以及两种加载顺序下的共存行为。
 <!-- readme-skill:end maintenance -->

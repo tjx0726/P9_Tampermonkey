@@ -13,7 +13,7 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | Process TCGPowerTools CSV export. | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
 | P9 TCGPowerTools | 1.2.3 | Tracking import, stock cooldown control, native order refresh, and default-on legacy redirect protection; new-domain launcher/settings | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App (compatibility only) | 1.0.3 | Retained for existing installations; now included in P9 TCGPowerTools | [Use merged plugin](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| ~~TCG PowerTools - Stay on Legacy App~~ (deprecated) | 1.2.3 migration | Replaced by P9 TCGPowerTools; existing installations migrate through updates | Disabled — deprecated | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
@@ -25,7 +25,7 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 
 If you previously installed a script by copying its source or from a local URL without an update source, install this repository's version once through the relevant link above to register its update URLs. Confirm an update if prompted, and keep only one enabled copy of each script.
 
-After installing **P9 TCGPowerTools**, disable the old-name tracking importer and the separate **Stay on Legacy App** script. The merged plugin includes the blocker. On `new.tcgpowertools.com`, it currently provides the launcher and shared settings only; stock and tracking actions remain disabled.
+**Stay on Legacy App** is deprecated and its new-install link is disabled. Existing installations update to **P9 TCGPowerTools** through the retained migration URL, then follow the canonical plugin update URL. Allow any Tampermonkey source/permission confirmation. Keep one enabled copy if the merged plugin is already installed, and disable any remaining old-name tracking importer. The merged plugin includes default-on legacy redirect protection. On `new.tcgpowertools.com`, it currently provides the launcher and shared settings only; stock and tracking actions remain disabled.
 
 The canonical folder and file are now `p9-tcgpowertools/p9-tcgpowertools.user.js`. The former update URL retains a migration copy; existing installations switch to the new URL after updating once.
 

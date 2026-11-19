@@ -13,7 +13,7 @@
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | 处理 TCGPowerTools 导出的 CSV。 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
 | P9 TCGPowerTools | 1.2.3 | Tracking 导入、库存冷却控制、原生订单刷新、默认开启的旧版跳转保护，以及新版域名入口和设置 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App（仅兼容旧安装） | 1.0.3 | 为已有安装保留，功能现已合并至 P9 TCGPowerTools | [使用合并插件](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| ~~TCG PowerTools - Stay on Legacy App~~（deprecated） | 1.2.3 迁移版 | 已由 P9 TCGPowerTools 取代；已有安装通过更新迁移 | 已禁用 — deprecated | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
@@ -25,7 +25,7 @@
 
 已有手动粘贴或从本地地址安装、没有更新来源的脚本时，需要通过上方对应链接安装一次本仓库版本，以保存更新地址。若提示更新现有脚本，确认更新；安装后检查每个脚本只保留一个启用的副本。
 
-安装 **P9 TCGPowerTools** 后，请停用旧名称 tracking 导入器和独立 **Stay on Legacy App** 脚本，合并插件已包含拦截功能。在 `new.tcgpowertools.com` 当前仅提供入口和共享设置，库存及 tracking 操作保持禁用。
+**Stay on Legacy App** 已 deprecated，新安装链接已禁用。已有安装通过保留的迁移地址更新为 **P9 TCGPowerTools**，随后跟随正式插件更新地址；如 Tampermonkey 提示来源或权限变化，请确认更新。已安装合并插件时只保留一个启用副本，并停用仍存在的旧名称 tracking 导入器。合并插件默认开启旧版跳转保护。在 `new.tcgpowertools.com` 当前仅提供入口和共享设置，库存及 tracking 操作保持禁用。
 
 插件的主目录和文件现统一为 `p9-tcgpowertools/p9-tcgpowertools.user.js`。旧更新地址保留迁移副本；已有安装完成一次更新后，后续从新地址检查更新。
 

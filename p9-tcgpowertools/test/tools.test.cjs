@@ -26,7 +26,7 @@ function sharedStorage() {
   };
 }
 
-function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-pricing', shared, local = {}, callback = async () => {}, dialog = false, ariaButton = false, isolatedWindow = false, hostileExport = false, mounted = false, fetchedAt = Date.now() - 60000 } = {}) {
+function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-pricing', shared, local = {}, callback = async () => {}, dialog = false, ariaButton = false, isolatedWindow = false, hostileExport = false, mounted = false, scriptSource = source, fetchedAt = Date.now() - 60000 } = {}) {
   const attributes = new Map([['aria-disabled', 'true']]);
   const classes = new Set(['Mui-disabled']);
   const button = {
@@ -100,7 +100,7 @@ function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-
   if (isolatedWindow) { context.unsafeWindow = context; context.window = {}; }
   const originalFetch = context.fetch;
   vm.createContext(context);
-  vm.runInContext(source, context);
+  vm.runInContext(scriptSource, context);
   const navigate = (url, cancelable = true) => {
     const event = { destination: { url }, cancelable, prevented: false, preventDefault() { this.prevented = true; } };
     for (const listener of navigation.get('navigate') || []) listener(event);
@@ -296,15 +296,41 @@ test('the native handler adapter fails closed when the site changes its event bi
   assert.throws(() => nativeStockHandler({ __reactProps$test: { onClick: null } }), /unavailable/);
 });
 
-test('the old standalone blocker yields to the merged plugin but still works by itself', () => {
-  const merged = runtime();
-  merged.api.setPreference(KEYS.legacy, false);
-  vm.runInContext(legacySource, merged.context);
-  assert.equal(merged.navigate('https://new.tcgpowertools.com/login-redirect').prevented, false);
-  const listeners = [];
-  const separate = { window: { navigation: { addEventListener: (type, fn) => listeners.push(fn) } }, URL, console };
-  vm.runInNewContext(legacySource, separate);
-  let prevented = false;
-  listeners[0]({ destination: { url: 'https://new.tcgpowertools.com/login-redirect' }, cancelable: true, preventDefault() { prevented = true; } });
-  assert.equal(prevented, true);
+test('the deprecated blocker update adopts the canonical identity and future update source', () => {
+  const metadata = (text, name) => text.match(new RegExp(`^// @${name}\\s+(.+)$`, 'm'))?.[1];
+  for (const name of ['name', 'namespace', 'updateURL', 'downloadURL']) {
+    assert.equal(metadata(legacySource, name), metadata(source, name));
+  }
+  assert.equal(metadata(legacySource, 'name'), 'P9 TCGPowerTools');
+  assert.equal(metadata(legacySource, 'version'), '1.2.3'); // Frozen migration release, newer than all 1.0.x blocker releases.
+  assert.equal(metadata(legacySource, 'downloadURL'), 'https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js');
+});
+
+test('the deprecated update contains the full plugin and initializes independently on both domains', () => {
+  for (const origin of ['https://app.tcgpowertools.com', 'https://new.tcgpowertools.com']) {
+    const r = runtime({ origin, mounted: true, scriptSource: legacySource });
+    assert.equal(r.api.version, '1.2.3');
+    assert.equal(r.api.preferences().stayOnLegacy, true);
+    assert.equal(typeof r.api.refreshOrders, 'function');
+    assert.equal(typeof r.api.refreshStock, 'function');
+    r.click('launch');
+    r.click('menu-settings');
+    assert.equal(r.toolDialog.open, true);
+    assert.equal(r.requests.length, 0);
+  }
+});
+
+test('migration and canonical copies do not install duplicate hooks or override existing preferences in either load order', () => {
+  for (const [first, second] of [[source, legacySource], [legacySource, source]]) {
+    const r = runtime({ scriptSource: first });
+    r.api.setPreference(KEYS.legacy, false);
+    const api = r.api;
+    const fetch = r.context.fetch;
+    const open = r.context.XMLHttpRequest.prototype.open;
+    vm.runInContext(second, r.context);
+    assert.equal(r.context.P9TCGPowerTools, api);
+    assert.equal(r.context.fetch, fetch);
+    assert.equal(r.context.XMLHttpRequest.prototype.open, open);
+    assert.equal(r.navigate('https://new.tcgpowertools.com/login-redirect').prevented, false);
+  }
 });

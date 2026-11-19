@@ -1,69 +1,61 @@
 <!-- readme-skill:begin hero -->
-# TCG PowerTools - Stay on Legacy App
+# TCG PowerTools - Stay on Legacy App (Deprecated)
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-Prevent the legacy [TCG PowerTools](https://app.tcgpowertools.com/) page from navigating to `https://new.tcgpowertools.com/login-redirect`. Current version: **1.0.3**.
+**Deprecated. New installation is disabled.** This feature is included and enabled by default in [P9 TCGPowerTools](../p9-tcgpowertools/README.md).
 
-This feature is now included, enabled by default, in [P9 TCGPowerTools](../p9-tcgpowertools/README.md). Install the merged plugin for new setups and disable this separate script. The old file and update URL remain for compatibility; version 1.0.3 yields to the merged plugin when present, so the shared Settings control is authoritative.
+~~Install script~~ (disabled — deprecated) · [Replacement plugin](../p9-tcgpowertools/README.md) · [Migration source](tcgpowertools-stay-on-legacy.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
 
-[Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [Source](tcgpowertools-stay-on-legacy.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
+Migration release: **1.2.3**. The existing update path now serves a complete P9 TCGPowerTools migration copy, with the merged plugin's name, namespace, and canonical update/download URLs.
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin installation -->
-## Installation and usage
+## Existing installations
 
-1. Enable [Tampermonkey](https://www.tampermonkey.net/) in Chrome or a Chromium browser that supports the Navigation API.
-2. Follow **Install script** and confirm installation or an update in Tampermonkey.
-3. Ensure the script is enabled and Tampermonkey can access `https://app.tcgpowertools.com/*`. Enable **Allow User Scripts** or the equivalent userscript execution permission required by your browser.
-4. Open the legacy app directly and reload it.
-
-At `document-start`, the script registers a listener for the Navigation API's `navigate` event. It calls `preventDefault()` when the destination is the new app's `/login-redirect` or `/login-redirect/` and the navigation is cancelable.
+1. Keep Tampermonkey update checks enabled. Enable **Automatic installation** if updates should install automatically.
+2. Let the next update check run, or choose **Check for updates** for the existing script. No separate installation is needed.
+3. Confirm any update-source or permission prompt shown by Tampermonkey. The replacement also supports the new domain and adds tracking, stock, and shared settings features.
+4. After updating, reload the site and verify the script is named **P9 TCGPowerTools**, version **1.2.3** or later, with update and download URLs ending in `P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js`.
 
 ```mermaid
 flowchart TD
-    A[Install or update the script] --> B[Open legacy TCG PowerTools]
-    B --> C[Listen for navigation at page startup]
-    C --> D[Cancel cancelable navigation to the new login-redirect]
+    A[Existing blocker checks its old update URL] --> B[Find migration release 1.2.3]
+    B --> C[Tampermonkey installs P9 TCGPowerTools]
+    C --> D[Future checks use the canonical plugin URL]
 ```
 
-Disable the script and reload the page to stop blocking redirects. The script requires no build step, server, or API key.
+For a new installation, use the replacement plugin's guide above. Do not install this deprecated entry point.
 <!-- readme-skill:end installation -->
 
 <!-- readme-skill:begin migration -->
-## Machines with the old repository version installed
+## Original repository installations
 
-The [original repository](https://github.com/tjx0726/tcgpowertools-block-redirect) continues to serve **1.0.2** at the original script path. Existing `1.0.1` installations can discover the update at that old URL; after installation, their `@updateURL` and `@downloadURL` point to this repository's script. The script name and namespace remain unchanged.
+The [original repository](https://github.com/tjx0726/tcgpowertools-block-redirect) still serves **1.0.2**, whose update and download URLs point to this repository's retained migration path. A `1.0.1` installation using the original URL first updates to `1.0.2`, then discovers the full-plugin migration on a subsequent update check. An existing `1.0.2` or `1.0.3` installation using this repository can discover the migration directly.
 
-- Enable update checks in Tampermonkey. Enable **Automatic installation** as well if updates should install automatically.
-- Migration occurs when each machine next checks for and installs the update. You can manually check for updates to trigger the check sooner.
-- After installation, verify that the version is at least `1.0.2` and its update URL contains `P9_Tampermonkey/main/tcgpowertools-block-redirect/`.
-- A manually pasted copy without an update source needs a one-time update through this page's install link. Locally modified copies or overridden update URLs may also require manual attention.
-- Retain the original file in the old repository so machines that have been offline can migrate later. Future versions only need maintenance in the new repository.
+Keep both old paths available for machines that have been offline. Publishing this migration does not establish that every machine has installed it.
 
-This migration follows the [Tampermonkey maintainer's explanation of update-URL changes](https://github.com/Tampermonkey/tampermonkey/issues/1904). Publishing the repository changes does not establish that every machine has installed the update.
+The update mechanism follows the Tampermonkey maintainer's explanations of [script renaming and source-change confirmation](https://github.com/Tampermonkey/tampermonkey/discussions/1542) and [update-URL migration](https://github.com/Tampermonkey/tampermonkey/issues/1904).
 <!-- readme-skill:end migration -->
 
 <!-- readme-skill:begin limitations -->
-## Scope and limitations
+## Migration limits
 
-- Runs only on `app.tcgpowertools.com` and blocks navigation to the new app's specified login-redirect path, including links to that destination clicked on the legacy page. Other destinations are unaffected.
-- Uses the browser's Navigation API. If the API is unsupported, it logs an error and does not register a navigation listener.
-- Cannot prevent a server redirect before the page loads or navigation marked non-cancelable by the browser. Actual injection timing depends on the browser and Tampermonkey configuration.
-- Does not read cookies, change account flags, modify deployed site code, or print tokens from destination URLs to the console.
-- Only blocks navigation. Site problems such as repeated user updates or request loops require separate fixes; disable the script and reload if problems occur.
+- Update checks and automatic installation depend on each browser's Tampermonkey settings. Confirmation prompts are controlled by the extension.
+- A pasted/local copy without an update source, a locally modified script, or an overridden update URL can require a one-time update using the replacement plugin's guide.
+- Disabled installations stay subject to Tampermonkey's enabled/disabled state; this migration does not force them to run.
+- If the merged plugin is already installed, keep one enabled copy after migration. The shared runtime guard prevents duplicate interfaces and request hooks, but does not delete extension records.
+- The migrated script uses the complete merged plugin, including default-on **Stay on Legacy App**. Its supported domains, settings, and limitations are documented in the replacement guide.
 <!-- readme-skill:end limitations -->
 
 <!-- readme-skill:begin maintenance -->
 ## Local checks and maintenance
 
-Run from this directory:
-
 ```sh
 node --check tcgpowertools-stay-on-legacy.user.js
+cd ../p9-tcgpowertools
+npm test
 ```
 
-Version 1.0.3 adds the merged-plugin coexistence guard. The original repository retains migration version 1.0.2; the stable update URL in this repository serves later compatibility updates. Per-machine installation and extension injection timing must be checked in the relevant browser.
-
-For future updates, increase `@version` in this directory's script, preserve the name, namespace, and update URLs, and synchronize the root README and CHANGELOG.
+Keep this complete **1.2.3** migration copy frozen. Future feature releases belong in `p9-tcgpowertools/`; migrated installations follow that canonical update URL. Do not remove the old file or reintroduce its installation link. The regression suite checks migration metadata, independent full-plugin startup, and coexistence in either load order.
 <!-- readme-skill:end maintenance -->

@@ -4,6 +4,13 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### TCG PowerTools - Stay on Legacy App — 1.2.3 migration (deprecated)
+
+- Replace the old 1.0.x update endpoint with a complete P9 TCGPowerTools 1.2.3 migration copy, adopting the canonical name, namespace, and update/download URLs at the owner's request.
+- Preserve the old path for installed scripts while routing subsequent updates to the maintained plugin. The original repository's existing 1.0.2 bridge remains available for older installations.
+- Mark the standalone script deprecated and disable its installation links in both README languages; document extension-controlled confirmations, update settings, and existing-copy handling.
+- Add regression checks for migration metadata, standalone full-plugin initialization, and duplicate-hook prevention in either load order.
+
 ### P9 TCGPowerTools — 1.2.3
 
 - Remove the introductory helper text from the menu and Settings views.
