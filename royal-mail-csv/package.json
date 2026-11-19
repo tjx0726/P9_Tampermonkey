@@ -1,0 +1,10 @@
+{
+  "name": "p9-royal-mail-csv",
+  "version": "1.1.1",
+  "private": true,
+  "description": "A self-contained Tampermonkey CSV processor for Royal Mail.",
+  "scripts": {
+    "check": "node --check royal-mail-csv.user.js",
+    "test": "node --test test/*.test.cjs"
+  }
+}

@@ -1,0 +1,5 @@
+idOrder,PID,articles,issues,shippingMethod,shippingAddressName,shippingAddressExtra,shippingAddressStreet,shippingAddressCity,shippingAddressZip,phone,note
+001234,0007,51,,UK Standard Large Letter (2nd Class),José Sample,,"1 Example Road, Unit ""B""",London,01234,07123456789,"Line one
+Line two"
+001235,0008,2,[],Tracked 48 (Real Tracked Service),Sample Two,,2 Example Road,London,04567,07234567890,<img src=x onerror=alert(1)>
+001236,0009,1,Missing article,Unmapped Test Service,Sample Three,,3 Example Road,London,07890,07345678901,Test fixture only
