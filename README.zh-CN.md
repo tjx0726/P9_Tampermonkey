@@ -3,7 +3,7 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
-P9 的 Tampermonkey 用户脚本集合。每个脚本放在独立文件夹中，分别安装、启用和更新。默认英文文档为 `README.md`，简体中文版为 `README.zh-CN.md`。
+供 P9 内部使用的 Tampermonkey 用户脚本集合。每个脚本放在独立文件夹中，分别安装、启用和更新。默认英文文档为 `README.md`，简体中文版为 `README.zh-CN.md`。
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin scripts -->
@@ -48,6 +48,9 @@ flowchart TD
 
 ```text
 P9_Tampermonkey/
+├── .agents/
+│   └── .gitkeep
+├── AGENTS.md
 ├── README.md
 ├── README.zh-CN.md
 ├── CHANGELOG.md
@@ -72,7 +75,7 @@ P9_Tampermonkey/
 <!-- readme-skill:begin maintenance -->
 ## 维护与新增脚本
 
-- 每个脚本使用独立文件夹，包含自己的 `.user.js`、英文 `README.md` 和中文 `README.zh-CN.md`；两种语言的说明同步维护。
+- 每个脚本使用独立文件夹，包含自己的 `.user.js`、英文 `README.md` 和所需配套文件。中文 `README.zh-CN.md` 可选；提供时应与英文说明同步维护。
 - 发布改动时提高该脚本的 `@version`；有 `package.json` 时同步版本号。
 - 保持更新地址中的文件路径稳定，并指向 `main` 分支。
 - 提交前执行该脚本的本地检查，更新上方目录和根目录 [CHANGELOG](CHANGELOG.md)。

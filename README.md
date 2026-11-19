@@ -3,7 +3,7 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
-P9's collection of Tampermonkey userscripts. Each script lives in its own folder and is installed, enabled, and updated independently. `README.md` is the default English guide; `README.zh-CN.md` is the Simplified Chinese edition.
+Tampermonkey userscripts for P9's internal use. Each script lives in its own folder and is installed, enabled, and updated independently. `README.md` is the default English guide; `README.zh-CN.md` is the Simplified Chinese edition.
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin scripts -->
@@ -48,6 +48,9 @@ The script name and namespace are unchanged. Migration requires an installation 
 
 ```text
 P9_Tampermonkey/
+├── .agents/
+│   └── .gitkeep
+├── AGENTS.md
 ├── README.md
 ├── README.zh-CN.md
 ├── CHANGELOG.md
@@ -72,7 +75,7 @@ P9_Tampermonkey/
 <!-- readme-skill:begin maintenance -->
 ## Maintenance and new scripts
 
-- Give each script its own folder containing its `.user.js`, an English `README.md`, and a Chinese `README.zh-CN.md`; maintain both language editions together.
+- Give each script its own folder containing its `.user.js`, an English `README.md`, and any required supporting files. A Chinese `README.zh-CN.md` is optional; if present, keep it synchronized with the English guide.
 - Increase that script's `@version` when publishing changes, and synchronize `package.json` if one exists.
 - Keep the update URL's file path stable and point it to the `main` branch.
 - Run the script's local checks before committing, then update the catalog above and the root [CHANGELOG](CHANGELOG.md).
