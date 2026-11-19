@@ -12,6 +12,7 @@
 | 脚本 | 版本 | 用途 | 安装 | 说明 |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.1 | 在 Royal Mail Click & Drop 页面处理 Cardmarket CSV，生成邮寄服务、订单 reference 和 SKU | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [简体中文](royal-mail-csv/README.zh-CN.md) |
+| P9 Order Tools for TCG PowerTools | 1.1.2 | 读取 Royal Mail 面单 PDF，通过 Cardmarket ID 和 PID 匹配并填写 tracking，原生保存后自动刷新订单 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [简体中文](tcgpowertools-tracking/README.zh-CN.md) |
 | TCG PowerTools - Stay on Legacy App | 1.0.2 | 阻止旧版 TCG PowerTools 页面跳转到新版的 login-redirect 入口 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [简体中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
@@ -22,7 +23,7 @@
 2. 点击上方对应脚本的「安装脚本」链接，在 Tampermonkey 页面确认安装。
 3. 刷新脚本适用的网页，按该脚本的使用说明操作。
 
-已有手动复制安装的 Royal Mail 脚本时，也需要通过上方链接安装一次本仓库版本，以保存更新地址。若提示更新现有脚本，确认更新；安装后检查只保留一个启用的副本。
+已有手动粘贴或从本地地址安装、没有更新来源的脚本时，需要通过上方对应链接安装一次本仓库版本，以保存更新地址。若提示更新现有脚本，确认更新；安装后检查每个脚本只保留一个启用的副本。
 
 每个脚本的 `@updateURL` 和 `@downloadURL` 指向本仓库 `main` 分支中自己的文件。Tampermonkey 按本地检查周期比较 `@version`，并根据「自动安装」设置处理新版。请在 Tampermonkey 中启用更新检查，并按需要启用自动安装。
 
@@ -63,10 +64,19 @@ P9_Tampermonkey/
 │       ├── rules.test.cjs
 │       └── fixtures/
 │           └── orders.csv
-└── tcgpowertools-block-redirect/
+├── tcgpowertools-block-redirect/
+│   ├── README.md
+│   ├── README.zh-CN.md
+│   └── tcgpowertools-stay-on-legacy.user.js
+└── tcgpowertools-tracking/
     ├── README.md
     ├── README.zh-CN.md
-    └── tcgpowertools-stay-on-legacy.user.js
+    ├── tcgpowertools-royal-mail-tracking.user.js
+    ├── package.json
+    └── test/
+        ├── importer.test.cjs
+        ├── refresh.test.cjs
+        └── pdf-sample.test.cjs
 ```
 
 `orders.csv` 是虚构的测试数据。实际订单、处理结果、浏览器截图和凭据不应提交到此公开仓库。
@@ -81,7 +91,7 @@ P9_Tampermonkey/
 - 提交前执行该脚本的本地检查，更新上方目录和根目录 [CHANGELOG](CHANGELOG.md)。
 - 新增到仓库的脚本需要用户单独安装一次。
 
-Royal Mail 脚本的本地检查：
+Royal Mail CSV 脚本的本地检查：
 
 ```sh
 cd royal-mail-csv
@@ -89,5 +99,13 @@ npm run check
 npm test
 ```
 
-测试使用 Node.js 内置测试运行器，无需安装 npm 依赖；安装和使用脚本本身无需 Node.js 或构建步骤。
+Tracking 脚本的本地检查：
+
+```sh
+cd tcgpowertools-tracking
+npm run check
+npm test
+```
+
+单元测试使用 Node.js 内置测试运行器，无需安装 npm 依赖。Tracking 脚本的可选 PDF 集成检查需要本地 PDF.js 模块和私有 PDF/预期结果文件，详见其说明。安装和使用脚本本身无需 Node.js 或构建步骤。
 <!-- readme-skill:end maintenance -->

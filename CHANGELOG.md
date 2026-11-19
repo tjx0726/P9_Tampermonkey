@@ -4,6 +4,14 @@
 
 ## 2026-11-19
 
+### tcgpowertools-tracking — 1.1.2
+
+- 将已验证的 P9 Order Tools 收录至独立脚本目录，提供英文菜单、PDF 上传预览、tracking 批量保存和原生操作后的自动刷新设置。
+- 兼容旧合并 reference 和新分离 reference/SKU 格式，正确处理 `20x PID (quantity)` 数量前缀。
+- 保留脚本名称和 namespace，将主页及更新地址指向本仓库 `main` 分支；原本没有更新来源的本地副本需通过新链接安装一次。
+- 添加独立中英文说明、27 项使用虚构数据的单元检查，以及两项通过私有文件运行的 PDF 集成检查。
+- 不收录实际面单、订单记录、截图或针对具体账户的测试 PDF 生成器。
+
 ### tcgpowertools-block-redirect — 1.0.2
 
 - 从独立仓库 `tjx0726/tcgpowertools-block-redirect` 收录到独立脚本文件夹。
