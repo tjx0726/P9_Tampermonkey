@@ -1,9 +1,9 @@
 <!-- readme-skill:begin hero -->
 # P9_Tampermonkey
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
-Tampermonkey userscripts for P9's internal use. Each script lives in its own folder and is installed, enabled, and updated independently. `README.md` is the default English guide; `README.zh-CN.md` is the Simplified Chinese edition.
+Tampermonkey userscripts for P9's internal use. Each script lives in its own folder and is installed, enabled, and updated independently. `README.md` is the default English guide; `README.zh-CN.md` is the Chinese edition.
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin scripts -->
@@ -11,9 +11,9 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 
 | Script | Version | Purpose | Install | Documentation |
 | --- | --- | --- | --- | --- |
-| P9 Royal Mail CSV Processor | 1.1.1 | Process Cardmarket CSV exports on Royal Mail Click & Drop, generating shipping services, order references, and SKUs | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [简体中文](royal-mail-csv/README.zh-CN.md) |
-| P9 Order Tools for TCG PowerTools | 1.1.2 | Read Royal Mail label PDFs, match Cardmarket IDs and PIDs, add tracking, and refresh orders after native saves | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [简体中文](tcgpowertools-tracking/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App | 1.0.2 | Block navigation from the legacy TCG PowerTools app to the new app's login-redirect endpoint | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [简体中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| P9 Royal Mail CSV Processor | 1.1.1 | Process Cardmarket CSV exports on Royal Mail Click & Drop, generating shipping services, order references, and SKUs | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
+| P9 Order Tools for TCG PowerTools | 1.1.2 | Read Royal Mail label PDFs, match Cardmarket IDs and PIDs, add tracking, and refresh orders after native saves | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
+| TCG PowerTools - Stay on Legacy App | 1.0.2 | Block navigation from the legacy TCG PowerTools app to the new app's login-redirect endpoint | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->

@@ -1,6 +1,6 @@
 # P9 Order Tools for TCG PowerTools
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
 An English Tampermonkey interface for the legacy `https://app.tcgpowertools.com/orders` page. It reads Royal Mail Click & Drop shipping label PDFs, matches orders by Cardmarket ID and PID, and saves tracking numbers. It can run alongside the legacy redirect blocker.
 

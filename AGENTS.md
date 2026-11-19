@@ -29,7 +29,8 @@ Keep script-specific documentation and supporting files in that script's folder.
 ## README language
 
 - Write `README.md` in English. English is the default documentation language at the repository root and in every script folder.
-- A Simplified Chinese edition, `README.zh-CN.md`, is optional.
+- A Chinese edition, `README.zh-CN.md`, is optional.
+- Label Chinese-language navigation links as `中文`.
 - Preserve existing Chinese editions and keep them consistent with the English documentation when making related changes.
 - When both editions exist, provide language-switching links between them and keep commands, versions, installation URLs, and technical facts aligned.
 

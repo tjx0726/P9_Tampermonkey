@@ -1,7 +1,7 @@
 <!-- readme-skill:begin hero -->
 # TCG PowerTools - Stay on Legacy App
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
 阻止旧版 [TCG PowerTools](https://app.tcgpowertools.com/) 页面跳转到 `https://new.tcgpowertools.com/login-redirect`。当前版本：**1.0.2**。
 

@@ -1,6 +1,6 @@
 # P9 Order Tools for TCG PowerTools
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
 适用于旧版 `https://app.tcgpowertools.com/orders` 页面的英文 Tampermonkey 工具。读取 Royal Mail Click & Drop 邮寄面单 PDF，通过 Cardmarket ID 和 PID 匹配订单并保存 tracking number，可与旧版跳转拦截脚本同时使用。
 

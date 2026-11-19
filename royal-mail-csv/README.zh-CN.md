@@ -1,7 +1,7 @@
 <!-- readme-skill:begin hero -->
 # P9 Royal Mail CSV Processor
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
 在 [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) 页面右下角添加 **Process CSV** 按钮，将 Cardmarket 导出的 CSV 在浏览器中处理并下载。当前版本：**1.1.1**。脚本界面为英文。
 

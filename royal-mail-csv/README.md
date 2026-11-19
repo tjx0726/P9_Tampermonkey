@@ -1,7 +1,7 @@
 <!-- readme-skill:begin hero -->
 # P9 Royal Mail CSV Processor
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
 Adds a **Process CSV** button to the bottom-right corner of [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) to process and download Cardmarket CSV exports in your browser. Current version: **1.1.1**. The script's interface is in English.
 

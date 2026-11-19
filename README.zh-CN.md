@@ -1,9 +1,9 @@
 <!-- readme-skill:begin hero -->
 # P9_Tampermonkey
 
-[English](README.md) · [简体中文](README.zh-CN.md)
+[English](README.md) · [中文](README.zh-CN.md)
 
-供 P9 内部使用的 Tampermonkey 用户脚本集合。每个脚本放在独立文件夹中，分别安装、启用和更新。默认英文文档为 `README.md`，简体中文版为 `README.zh-CN.md`。
+供 P9 内部使用的 Tampermonkey 用户脚本集合。每个脚本放在独立文件夹中，分别安装、启用和更新。默认英文文档为 `README.md`，中文版为 `README.zh-CN.md`。
 <!-- readme-skill:end hero -->
 
 <!-- readme-skill:begin scripts -->
@@ -11,9 +11,9 @@
 
 | 脚本 | 版本 | 用途 | 安装 | 说明 |
 | --- | --- | --- | --- | --- |
-| P9 Royal Mail CSV Processor | 1.1.1 | 在 Royal Mail Click & Drop 页面处理 Cardmarket CSV，生成邮寄服务、订单 reference 和 SKU | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [简体中文](royal-mail-csv/README.zh-CN.md) |
-| P9 Order Tools for TCG PowerTools | 1.1.2 | 读取 Royal Mail 面单 PDF，通过 Cardmarket ID 和 PID 匹配并填写 tracking，原生保存后自动刷新订单 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [简体中文](tcgpowertools-tracking/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App | 1.0.2 | 阻止旧版 TCG PowerTools 页面跳转到新版的 login-redirect 入口 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [简体中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| P9 Royal Mail CSV Processor | 1.1.1 | 在 Royal Mail Click & Drop 页面处理 Cardmarket CSV，生成邮寄服务、订单 reference 和 SKU | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
+| P9 Order Tools for TCG PowerTools | 1.1.2 | 读取 Royal Mail 面单 PDF，通过 Cardmarket ID 和 PID 匹配并填写 tracking，原生保存后自动刷新订单 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
+| TCG PowerTools - Stay on Legacy App | 1.0.2 | 阻止旧版 TCG PowerTools 页面跳转到新版的 login-redirect 入口 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
