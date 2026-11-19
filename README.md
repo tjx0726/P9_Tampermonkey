@@ -60,7 +60,7 @@ P9_Tampermonkey/
 │       ├── rules.test.cjs
 │       └── fixtures/
 │           └── orders.csv
-├── tcgpowertools-block-redirect/
+├── tcgpowertools-block-redirect/  (migration only)
 │   ├── README.md
 │   ├── README.zh-CN.md
 │   └── tcgpowertools-stay-on-legacy.user.js
