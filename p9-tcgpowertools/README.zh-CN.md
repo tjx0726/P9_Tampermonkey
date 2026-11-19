@@ -15,7 +15,7 @@
 2. 打开[安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js)，确认安装或更新。
 3. 刷新任一支持的域名，点击右下角 **P9 TCGPowerTools**。
 
-当前版本：**1.2.1**。主目录为 `p9-tcgpowertools`，脚本文件为 `p9-tcgpowertools.user.js`，包名为 `p9-tcgpowertools`。脚本名称和 namespace 保持不变；主页及更新地址已切换到新目录。旧 Raw 地址保留完整的 1.2.1 迁移副本，已有安装更新后会跟随新地址。请停用仍存在的旧 tracking 副本和独立 **TCG PowerTools - Stay on Legacy App** 脚本，只保留一个合并插件启用。没有更新来源的粘贴或本地副本需通过上方链接安装一次，之后按 Tampermonkey 本地设置从 `main` 检查更新。
+当前版本：**1.2.2**。主目录为 `p9-tcgpowertools`，脚本文件为 `p9-tcgpowertools.user.js`，包名为 `p9-tcgpowertools`。脚本名称和 namespace 保持不变；主页及更新地址已切换到新目录。旧 Raw 地址保留完整的 1.2.1 迁移副本，已有安装更新后会跟随新地址。请停用仍存在的旧 tracking 副本和独立 **TCG PowerTools - Stay on Legacy App** 脚本，只保留一个合并插件启用。没有更新来源的粘贴或本地副本需通过上方链接安装一次，之后按 Tampermonkey 本地设置从 `main` 检查更新。
 
 ## 菜单与使用
 
@@ -23,6 +23,8 @@
 - **Placeholder** 禁用，预留给后续功能。
 - **Force Refresh Stock** 在旧版 **Your Stock** 页面调用一次站点原生刷新，冷却期内同样可用；位于其他旧版页面时会提示先打开库存页。
 - **Settings** 包含共享的跳转、冷却和订单刷新设置。
+
+菜单显示当前运行的脚本版本。打开菜单不会请求订单或库存。页面导航和站点 DOM 更新事件负责同步冷却按钮，插件不再运行周期性页面任务。只有启动 **Force Refresh Stock** 时，才主动关闭插件窗口，为站点的加载或确认弹窗让出空间。
 
 选择邮寄面单 PDF，检查 PID、Cardmarket order ID、PDF tracking、当前 tracking 和匹配结果，然后勾选需要更新的订单。覆盖已有的不同 tracking 时启用 **Allow overwriting different tracking numbers**；相同值自动跳过。点击 **Add tracking to N selected orders**，按顺序保存并重新读取服务器记录验证。
 
@@ -83,9 +85,9 @@ npm run check
 npm test
 ```
 
-测试包含 41 项无需依赖的检查和两项可选 PDF 集成检查，覆盖新旧 reference、匹配与安全保存、原生订单刷新、默认跳转保护、跨域名设置、冷却解锁及恢复、原生刷新防重复、脚本隔离、不可访问的第三方导出对象，以及与独立拦截脚本共存。
+测试包含 44 项无需依赖的检查和两项可选 PDF 集成检查，覆盖新旧 reference、匹配与安全保存、原生订单刷新、默认跳转保护、跨域名设置、冷却解锁及恢复、原生刷新防重复、脚本隔离、不可访问的第三方导出对象，以及与独立拦截脚本共存。已挂载界面的检查覆盖各支持路径打开菜单、库存刷新后重开菜单，以及无需轮询即可在 SPA 导航中同步冷却按钮。
 
-实际 PDF 和独立核对的预期记录保留在此公开仓库之外。每份预期文件为 JSON 数组，元素包含 `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`。提供两份 PDF 及对应的私有预期文件，可执行全部 43 项检查：
+实际 PDF 和独立核对的预期记录保留在此公开仓库之外。每份预期文件为 JSON 数组，元素包含 `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`。提供两份 PDF 及对应的私有预期文件，可执行全部 46 项检查：
 
 ```sh
 LABEL_PDF='/private/path/combined-label.pdf' LABEL_EXPECTATIONS='/private/path/combined-expected.json' SPLIT_LABEL_PDF='/private/path/split-label.pdf' SPLIT_LABEL_EXPECTATIONS='/private/path/split-expected.json' PDFJS_MODULE='/absolute/path/to/pdfjs-dist/legacy/build/pdf.mjs' npm test

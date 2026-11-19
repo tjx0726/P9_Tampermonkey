@@ -15,7 +15,7 @@ An English Tampermonkey interface for TCG PowerTools. On the legacy app it impor
 2. Open [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) and confirm installation or update.
 3. Reload either supported domain and click **P9 TCGPowerTools** at the bottom right.
 
-Current version: **1.2.1**. The canonical folder is `p9-tcgpowertools`, the userscript is `p9-tcgpowertools.user.js`, and the package is `p9-tcgpowertools`. The script name and namespace are unchanged; homepage and update URLs now use the new directory. The former Raw URL retains a complete 1.2.1 migration copy so existing installations move to the new update URL. Disable any remaining older tracking copy and the separate **TCG PowerTools - Stay on Legacy App** script; keep one merged plugin enabled. A pasted or local copy without an update source needs a one-time installation through the link above. Future checks use `main` and follow Tampermonkey settings.
+Current version: **1.2.2**. The canonical folder is `p9-tcgpowertools`, the userscript is `p9-tcgpowertools.user.js`, and the package is `p9-tcgpowertools`. The script name and namespace are unchanged; homepage and update URLs now use the new directory. The former Raw URL retains a complete 1.2.1 migration copy so existing installations move to the new update URL. Disable any remaining older tracking copy and the separate **TCG PowerTools - Stay on Legacy App** script; keep one merged plugin enabled. A pasted or local copy without an update source needs a one-time installation through the link above. Future checks use `main` and follow Tampermonkey settings.
 
 ## Menu and use
 
@@ -23,6 +23,8 @@ Current version: **1.2.1**. The canonical folder is `p9-tcgpowertools`, the user
 - **Placeholder** is disabled and reserved for a future feature.
 - **Force Refresh Stock** invokes the site's original stock refresh once on the legacy **Your Stock** page, even during cooldown. On another legacy page it explains where to open the action.
 - **Settings** contains shared redirect, cooldown, and order-refresh preferences.
+
+The menu shows the installed script version. Opening it does not request orders or stock. Page navigation and native DOM updates synchronize the cooldown control; the plugin has no recurring page task. Only starting **Force Refresh Stock** closes the plugin window to make room for the site's loading or confirmation dialog.
 
 Choose a shipping label PDF, review the PID, Cardmarket order ID, PDF tracking, current tracking, and match result, then select the required orders. Enable **Allow overwriting different tracking numbers** when replacing an existing value. Identical values are skipped. **Add tracking to N selected orders** saves selected orders sequentially and verifies the server records.
 
@@ -83,9 +85,9 @@ npm run check
 npm test
 ```
 
-The suite has 41 dependency-free checks and two optional PDF integration checks. It covers both reference formats, matching and safe saves, native order refresh, default redirect protection, cross-domain preferences, cooldown unlock/restoration, native single-flight refresh, userscript isolation, inaccessible third-party exports, and standalone-blocker coexistence.
+The suite has 44 dependency-free checks and two optional PDF integration checks. It covers both reference formats, matching and safe saves, native order refresh, default redirect protection, cross-domain preferences, cooldown unlock/restoration, native single-flight refresh, userscript isolation, inaccessible third-party exports, and standalone-blocker coexistence. Mounted-interface checks cover opening menus on supported routes, reopening after stock refresh, and synchronizing cooldown controls during SPA navigation without polling.
 
-Real PDFs and independently checked expected records stay outside this public repository. Each expectations file is a JSON array of `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`. Supply both PDFs and their private expectation files to run all 43 checks:
+Real PDFs and independently checked expected records stay outside this public repository. Each expectations file is a JSON array of `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`. Supply both PDFs and their private expectation files to run all 46 checks:
 
 ```sh
 LABEL_PDF='/private/path/combined-label.pdf' LABEL_EXPECTATIONS='/private/path/combined-expected.json' SPLIT_LABEL_PDF='/private/path/split-label.pdf' SPLIT_LABEL_EXPECTATIONS='/private/path/split-expected.json' PDFJS_MODULE='/absolute/path/to/pdfjs-dist/legacy/build/pdf.mjs' npm test

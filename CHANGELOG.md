@@ -4,6 +4,12 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### P9 TCGPowerTools — 1.2.2
+
+- Remove the recurring 1.5-second page task. Navigation and native DOM updates now synchronize the stock cooldown control without polling or changing launcher visibility.
+- Display the installed version in the menu to help identify outdated or duplicate installations.
+- Add mounted-interface regressions for menus on both domains, reopening after a stock refresh, and cooldown synchronization during SPA navigation.
+
 ### P9 TCGPowerTools — 1.2.1
 
 - Rename the canonical folder, userscript, package, test imports, and documented paths to `p9-tcgpowertools` / `p9-tcgpowertools.user.js`.

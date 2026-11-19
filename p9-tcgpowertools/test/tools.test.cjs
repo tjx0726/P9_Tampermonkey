@@ -26,7 +26,7 @@ function sharedStorage() {
   };
 }
 
-function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-pricing', shared, local = {}, callback = async () => {}, dialog = false, ariaButton = false, isolatedWindow = false, hostileExport = false, fetchedAt = Date.now() - 60000 } = {}) {
+function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-pricing', shared, local = {}, callback = async () => {}, dialog = false, ariaButton = false, isolatedWindow = false, hostileExport = false, mounted = false, fetchedAt = Date.now() - 60000 } = {}) {
   const attributes = new Map([['aria-disabled', 'true']]);
   const classes = new Set(['Mui-disabled']);
   const button = {
@@ -45,6 +45,25 @@ function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-
   const storage = new Map(Object.entries(local));
   const navigation = new Map();
   const requests = [];
+  const observers = [];
+  const intervals = [];
+  const pageEvents = new EventTarget();
+  // Exercise the mounted UI's lifecycle and handlers without a browser or API.
+  // These elements model state only; real dialog/focus behavior is checked in Tabbit.
+  const elements = new Map();
+  const element = () => Object.assign(new EventTarget(), { hidden: false, dataset: {}, focus() {}, classList: { toggle() {} } });
+  const toolDialog = Object.assign(element(), {
+    open: false, closes: 0,
+    showModal() { this.open = true; },
+    close() { this.open = false; this.closes += 1; },
+  });
+  const shadow = {
+    set innerHTML(html) {
+      for (const match of html.matchAll(/\bid="([^"]+)"/g)) elements.set(`#${match[1]}`, element());
+      elements.set('dialog', toolDialog);
+    },
+    querySelector: selector => elements.get(selector),
+  };
   class XHR extends EventTarget { open() {} send() {} }
   const originalOpen = XHR.prototype.open;
   const database = { config: () => ({ name: 'Powertools-v2' }), getItem: async () => ({ fetchedAtTimestamp: fetchedAt }), setItem() {} };
@@ -59,7 +78,15 @@ function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-
   };
   const context = {
     ...(shared || {}),
-    document: { body: null, addEventListener() {}, querySelector: () => button, querySelectorAll: () => dialog ? [{ getClientRects: () => [1] }] : [] },
+    document: {
+      body: mounted ? { append(node) { node.isConnected = true; } } : null,
+      createElement: () => Object.assign(element(), { attachShadow: () => shadow }),
+      addEventListener() {}, querySelector: () => button,
+      querySelectorAll: () => dialog ? [{ getClientRects: () => [1] }] : [],
+    },
+    addEventListener: pageEvents.addEventListener.bind(pageEvents),
+    MutationObserver: class { constructor(callback) { observers.push(callback); } observe() {} },
+    setInterval: (callback, delay) => intervals.push({ callback, delay }),
     location: { origin, pathname },
     navigation: { addEventListener: (type, listener) => { if (!navigation.has(type)) navigation.set(type, []); navigation.get(type).push(listener); } },
     localStorage: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value) },
@@ -79,7 +106,17 @@ function runtime({ origin = 'https://app.tcgpowertools.com', pathname = '/stock-
     for (const listener of navigation.get('navigate') || []) listener(event);
     return event;
   };
-  return { context, api: context.P9TCGPowerTools, button, requests, navigate, originalFetch, originalOpen, storage };
+  return {
+    context, api: context.P9TCGPowerTools, button, requests, navigate, originalFetch, originalOpen, storage,
+    toolDialog, intervals,
+    click: id => elements.get(`#${id}`).dispatchEvent(new Event('click')),
+    mutate: () => observers.forEach(callback => callback([])),
+    route(path) {
+      context.location.pathname = path;
+      for (const callback of navigation.get('navigatesuccess') || []) callback();
+      pageEvents.dispatchEvent(new Event('popstate'));
+    },
+  };
 }
 
 test('redirect matching only targets the exact new-app login redirect', () => {
@@ -197,6 +234,61 @@ test('a failed native refresh is not retried and force refresh is unavailable of
   const other = runtime({ pathname: '/orders', callback: () => { calls += 1; } });
   await other.api.refreshStock();
   assert.equal(calls, 1);
+});
+
+test('opening the menu on every supported route schedules no recurring task or network request', async () => {
+  for (const origin of ['https://app.tcgpowertools.com', 'https://new.tcgpowertools.com']) {
+    for (const pathname of ['/orders', '/stock-pricing', '/pricing-settings', '/listing-and-appraisal']) {
+      const r = runtime({ origin, pathname, mounted: true });
+      r.click('launch');
+      r.click('menu-settings');
+      r.mutate();
+      r.route(pathname);
+      await settle();
+      assert.equal(r.toolDialog.open, true);
+      assert.equal(r.toolDialog.closes, 0);
+      assert.equal(r.intervals.length, 0);
+      assert.equal(r.requests.length, 0);
+    }
+  }
+});
+
+test('a completed stock refresh cannot later close a reopened menu on stock or other pages', async () => {
+  let finish;
+  let calls = 0;
+  const r = runtime({ mounted: true, callback: () => { calls += 1; return new Promise(resolve => { finish = resolve; }); } });
+  r.click('launch');
+  const refresh = r.api.refreshStock();
+  assert.equal(r.toolDialog.open, false); // Yield to the native loading dialog once.
+  finish();
+  await refresh;
+  r.click('launch');
+  for (const path of ['/stock-pricing', '/pricing-settings', '/listing-and-appraisal', '/orders']) {
+    r.route(path);
+    r.mutate();
+    await settle();
+    assert.equal(r.toolDialog.open, true);
+    assert.equal(r.toolDialog.closes, 1);
+  }
+  assert.equal(calls, 1);
+  assert.equal(r.intervals.length, 0);
+  assert.equal(r.requests.length, 0);
+});
+
+test('native page mutations and SPA navigation keep the cooldown control synchronized without polling', async () => {
+  const r = runtime({ mounted: true, ariaButton: true });
+  r.api.setPreference(KEYS.stock, true);
+  await settle();
+  r.click('launch');
+  r.route('/pricing-settings');
+  assert.equal(r.button.getAttribute('aria-disabled'), 'true');
+  r.context.location.pathname = '/stock-pricing';
+  r.mutate(); // Also handles SPA rendering when no Navigation API event is emitted.
+  await settle();
+  assert.equal(r.button.getAttribute('aria-disabled'), 'false');
+  assert.equal(r.toolDialog.open, true);
+  assert.equal(r.toolDialog.closes, 0);
+  assert.equal(r.intervals.length, 0);
 });
 
 test('the native handler adapter fails closed when the site changes its event binding', () => {

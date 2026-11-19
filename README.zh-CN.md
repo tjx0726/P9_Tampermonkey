@@ -12,7 +12,7 @@
 | 脚本 | 版本 | 用途 | 安装 | 说明 |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | 处理 TCGPowerTools 导出的 CSV。 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
-| P9 TCGPowerTools | 1.2.1 | Tracking 导入、库存冷却控制、原生订单刷新、默认开启的旧版跳转保护，以及新版域名入口和设置 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
+| P9 TCGPowerTools | 1.2.2 | Tracking 导入、库存冷却控制、原生订单刷新、默认开启的旧版跳转保护，以及新版域名入口和设置 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
 | TCG PowerTools - Stay on Legacy App（仅兼容旧安装） | 1.0.3 | 为已有安装保留，功能现已合并至 P9 TCGPowerTools | [使用合并插件](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 

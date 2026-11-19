@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         P9 TCGPowerTools
 // @namespace    local.p9.tcgpowertools
-// @version      1.2.1
+// @version      1.2.2
 // @description  P9 tools for TCG PowerTools: label tracking import, stock cooldown control, native refresh, and legacy redirect protection.
 // @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/p9-tcgpowertools
 // @match        https://app.tcgpowertools.com/*
@@ -20,7 +20,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '1.2.1';
+  const VERSION = '1.2.2';
   const TOOL_NAME = 'P9 TCGPowerTools';
   const AUTO_REFRESH_KEY = 'p9.tcg.tracking.autoRefresh';
   const STOCK_COOLDOWN_KEY = 'p9.tcg.tools.stockCooldownBypass';
@@ -753,6 +753,7 @@
             <button id="menu-stock" type="button">Force Refresh Stock</button>
             <button id="menu-settings" type="button">Settings</button>
           </nav>
+          <small>Version ${VERSION}</small>
         </section>
         <section id="tracking-view" hidden>
           <p class="muted">Upload a label PDF → Review Cardmarket order IDs and PIDs → Select orders and add tracking.</p>
@@ -824,7 +825,6 @@
     status(statusText, statusError);
     updateControls();
     const updateRoute = () => {
-      host.hidden = false;
       const route = `${location.origin}${location.pathname}`;
       if (route !== lastRoute) { lastRoute = route; stockIdentity = null; }
       void syncStockGate();
@@ -832,7 +832,6 @@
     updateRoute();
     page.addEventListener('popstate', updateRoute);
     page.navigation?.addEventListener('navigatesuccess', updateRoute);
-    setInterval(updateRoute, 1500);
     if (location.origin === LEGACY_ORIGIN) {
       document.addEventListener('click', (event) => {
         const button = event.target?.closest?.('[data-testid="get-stock-btn"]');
@@ -841,7 +840,9 @@
         event.stopImmediatePropagation();
         void refreshStock(event).catch((error) => { stockMessage = error.message; ui.querySelector('#stock-status').textContent = stockMessage; });
       }, true);
-      const observer = new MutationObserver(() => { void syncStockGate(); });
+      // React updates the native cooldown control itself. Observe those updates
+      // and SPA transitions instead of running a recurring page task.
+      const observer = new MutationObserver(updateRoute);
       observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'aria-disabled', 'style', 'class'] });
     }
   }

@@ -1,6 +1,6 @@
 {
   "name": "p9-tcgpowertools",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "private": true,
   "scripts": {
     "check": "node --check p9-tcgpowertools.user.js",
