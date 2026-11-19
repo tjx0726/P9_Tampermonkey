@@ -4,6 +4,14 @@
 
 ## 2026-11-19
 
+### tcgpowertools-block-redirect — 1.0.2
+
+- 从独立仓库 `tjx0726/tcgpowertools-block-redirect` 收录到独立脚本文件夹。
+- 将主页、`@updateURL` 和 `@downloadURL` 指向 `P9_Tampermonkey` 中的新位置。
+- 将版本从 1.0.1 提高到 1.0.2，保持名称、namespace、执行范围和重定向拦截逻辑一致。
+- 在旧仓库原路径保留相同的 1.0.2 迁移脚本：旧安装更新后改为跟随新仓库。
+- 补充安装、迁移条件及旧地址保留要求；未配置更新来源的手动副本需一次性安装新版。
+
 ### royal-mail-csv — 1.1.1
 
 - 首次发布到公开仓库 `tjx0726/P9_Tampermonkey`，基于已完成的本地版本 1.1.0。

@@ -10,6 +10,7 @@ P9 的 Tampermonkey 用户脚本集合。每个脚本放在独立文件夹中，
 | 脚本 | 版本 | 用途 | 安装 | 说明 |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.1 | 在 Royal Mail Click & Drop 页面处理 Cardmarket CSV，生成邮寄服务、订单 reference 和 SKU | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [使用说明](royal-mail-csv/README.md) |
+| TCG PowerTools - Stay on Legacy App | 1.0.2 | 阻止旧版 TCG PowerTools 页面跳转到新版的 login-redirect 入口 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [使用说明](tcgpowertools-block-redirect/README.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
@@ -32,6 +33,14 @@ flowchart TD
 ```
 <!-- readme-skill:end installation -->
 
+<!-- readme-skill:begin migration -->
+## 从旧仓库迁移 TCG PowerTools 脚本
+
+[旧仓库](https://github.com/tjx0726/tcgpowertools-block-redirect) 保留原始文件路径，并提供迁移版本 **1.0.2**。旧安装仍可从旧地址检查更新；安装新版后，更新地址会切换到本仓库，之后只需维护这里的脚本。
+
+脚本名称和 namespace 保持不变。迁移要求旧安装具有有效的更新来源，且 Tampermonkey 允许更新；自动安装还取决于本地设置。没有更新来源的手动副本，需要点击上方链接安装一次。可在 Tampermonkey 中手动检查更新，安装后确认版本至少为 `1.0.2`，更新地址包含 `P9_Tampermonkey/main/tcgpowertools-block-redirect/`。
+<!-- readme-skill:end migration -->
+
 <!-- readme-skill:begin structure -->
 ## 文件结构
 
@@ -39,14 +48,17 @@ flowchart TD
 P9_Tampermonkey/
 ├── README.md
 ├── CHANGELOG.md
-└── royal-mail-csv/
+├── royal-mail-csv/
+│   ├── README.md
+│   ├── royal-mail-csv.user.js
+│   ├── package.json
+│   └── test/
+│       ├── rules.test.cjs
+│       └── fixtures/
+│           └── orders.csv
+└── tcgpowertools-block-redirect/
     ├── README.md
-    ├── royal-mail-csv.user.js
-    ├── package.json
-    └── test/
-        ├── rules.test.cjs
-        └── fixtures/
-            └── orders.csv
+    └── tcgpowertools-stay-on-legacy.user.js
 ```
 
 `orders.csv` 是虚构的测试数据。实际订单、处理结果、浏览器截图和凭据不应提交到此公开仓库。
