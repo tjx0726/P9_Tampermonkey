@@ -11,7 +11,7 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 
 | Script | Version | Purpose | Install | Documentation |
 | --- | --- | --- | --- | --- |
-| P9 Royal Mail CSV Processor | 1.1.1 | Process TCGPowerTools CSV export. | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
+| P9 Royal Mail CSV Processor | 1.1.2 | Process TCGPowerTools CSV export. | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
 | P9 Order Tools for TCG PowerTools | 1.1.2 | Read Royal Mail label PDFs, match Cardmarket IDs and PIDs, add tracking, and refresh orders after native saves | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
 | TCG PowerTools - Stay on Legacy App | 1.0.2 | Block navigation from the legacy TCG PowerTools app to the new app's login-redirect endpoint | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->

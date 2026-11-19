@@ -3,7 +3,7 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-Adds a **Process CSV** button to the bottom-right corner of [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) to process and download Cardmarket CSV exports in your browser. Current version: **1.1.1**. The script's interface is in English.
+Adds a **Process CSV** button to the bottom-right corner of [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) to process and download TCGPowerTools CSV exports in your browser. Current version: **1.1.2**. The script's interface is in English.
 
 [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) · [Source](royal-mail-csv.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
 <!-- readme-skill:end hero -->
@@ -22,14 +22,14 @@ Older versions installed by manually copying the source need a one-time installa
 ## Usage
 
 1. Click **Process CSV** to expand the panel.
-2. Choose or drop a UTF-8 Cardmarket CSV file, up to 20 MB.
+2. Choose or drop a UTF-8 TCGPowerTools CSV export, up to 20 MB.
 3. Review the uploaded, kept, and removed order counts, warnings, and preview of the first five orders.
 4. Toggle any of the three processing options as needed; changing an option reprocesses the original file.
 5. Click **Download processed CSV**. For example, `orders.csv` downloads as `processed-orders.csv`.
 
 ```mermaid
 flowchart TD
-    A[Choose or drop a Cardmarket CSV] --> B[Filter and convert fields using selected options]
+    A[Choose or drop a TCGPowerTools CSV export] --> B[Filter and convert fields using selected options]
     B --> C[Review counts, warnings, and preview]
     C --> D[Download the CSV with a processed- prefix]
     D --> E[Import it into Royal Mail manually]
@@ -95,5 +95,5 @@ npm test
 
 `test/rules.test.cjs` contains 41 regression tests covering CSV parsing, filtering, address cleaning, shipping service mappings, separate references and SKUs, missing data, and repeated processing. `test/fixtures/orders.csv` contains fictional orders only.
 
-Version 1.1.1 changes only distribution metadata and the version number; CSV processing and interface behavior are inherited from 1.1.0.
+Version 1.1.2 identifies TCGPowerTools as the CSV source in the documentation, script descriptions, and interface subtitle. CSV processing rules are unchanged.
 <!-- readme-skill:end development -->

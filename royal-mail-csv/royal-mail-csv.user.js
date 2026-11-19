@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         P9 Royal Mail CSV Processor
 // @namespace    https://github.com/tjx0726/p9_cm_script
-// @version      1.1.1
-// @description  Process Cardmarket CSV exports for Royal Mail and download a processed copy.
+// @version      1.1.2
+// @description  Process TCGPowerTools CSV exports for Royal Mail and download a processed copy.
 // @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/royal-mail-csv
 // @updateURL    https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js
 // @downloadURL  https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js
@@ -270,7 +270,7 @@
         <section class="panel" id="panel" role="dialog" aria-labelledby="title" hidden>
           <header class="heading">
             <span class="stamp" aria-hidden="true">P9</span>
-            <div><h2 id="title">Process shipping CSV</h2><div class="subtitle">Cardmarket → Royal Mail</div></div>
+            <div><h2 id="title">Process shipping CSV</h2><div class="subtitle">TCGPowerTools → Royal Mail</div></div>
             <button class="close" type="button" aria-label="Collapse window">×</button>
           </header>
           <div class="body">

@@ -3,7 +3,7 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-在 [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) 页面右下角添加 **Process CSV** 按钮，将 Cardmarket 导出的 CSV 在浏览器中处理并下载。当前版本：**1.1.1**。脚本界面为英文。
+在 [Royal Mail Click & Drop](https://business.parcel.royalmail.com/) 页面右下角添加 **Process CSV** 按钮，将 TCGPowerTools 导出的 CSV 在浏览器中处理并下载。当前版本：**1.1.2**。脚本界面为英文。
 
 [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) · [脚本源码](royal-mail-csv.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.md)
 <!-- readme-skill:end hero -->
@@ -22,14 +22,14 @@
 ## 使用
 
 1. 点击 **Process CSV** 展开窗口。
-2. 选择或拖入 UTF-8 编码的 Cardmarket CSV，文件上限为 20 MB。
+2. 选择或拖入 UTF-8 编码的 TCGPowerTools CSV 导出文件，文件上限为 20 MB。
 3. 查看上传、保留、删除的订单数量、警告和前五条订单预览。
 4. 按需切换三个处理选项；选项改变后会重新处理原始文件。
 5. 点击 **Download processed CSV**，例如 `orders.csv` 下载为 `processed-orders.csv`。
 
 ```mermaid
 flowchart TD
-    A[选择或拖入 Cardmarket CSV] --> B[按选项过滤并转换字段]
+    A[选择或拖入 TCGPowerTools CSV 导出文件] --> B[按选项过滤并转换字段]
     B --> C[查看数量、警告和预览]
     C --> D[下载 processed- 前缀的 CSV]
     D --> E[在 Royal Mail 手动导入]
@@ -95,5 +95,5 @@ npm test
 
 `test/rules.test.cjs` 包含 41 项回归测试，覆盖 CSV 解析、筛选、地址清理、服务映射、独立 reference 与 SKU、缺失数据和重复处理等场景。`test/fixtures/orders.csv` 仅包含虚构订单。
 
-1.1.1 只修改分发元数据和版本号，CSV 处理和界面逻辑沿用 1.1.0。
+1.1.2 将文档、脚本描述和界面副标题中的 CSV 来源统一为 TCGPowerTools，CSV 处理规则保持不变。
 <!-- readme-skill:end development -->

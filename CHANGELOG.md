@@ -4,6 +4,12 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### royal-mail-csv — 1.1.2
+
+- Identify TCGPowerTools as the CSV export source in both README languages, the userscript description, package metadata, and the interface subtitle.
+- Synchronize the userscript, package, and documented versions at 1.1.2 so existing installations can receive the wording correction through automatic updates.
+- Preserve CSV processing rules, Cardmarket order-reference terminology, script identity, and update URLs.
+
 ### tcgpowertools-tracking — 1.1.2
 
 - Added the verified P9 Order Tools in its own script directory, with an English menu, PDF upload preview, batch tracking saves, and automatic refresh settings for native order actions.
