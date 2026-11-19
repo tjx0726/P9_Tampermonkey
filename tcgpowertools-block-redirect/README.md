@@ -3,7 +3,9 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-Prevent the legacy [TCG PowerTools](https://app.tcgpowertools.com/) page from navigating to `https://new.tcgpowertools.com/login-redirect`. Current version: **1.0.2**.
+Prevent the legacy [TCG PowerTools](https://app.tcgpowertools.com/) page from navigating to `https://new.tcgpowertools.com/login-redirect`. Current version: **1.0.3**.
+
+This feature is now included, enabled by default, in [P9 TCGPowerTools](../tcgpowertools-tracking/README.md). Install the merged plugin for new setups and disable this separate script. The old file and update URL remain for compatibility; version 1.0.3 yields to the merged plugin when present, so the shared Settings control is authoritative.
 
 [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [Source](tcgpowertools-stay-on-legacy.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
 <!-- readme-skill:end hero -->
@@ -61,7 +63,7 @@ Run from this directory:
 node --check tcgpowertools-stay-on-legacy.user.js
 ```
 
-Version 1.0.2 changes only the version number, homepage, and update URLs; its runtime code is identical to the old repository's 1.0.1. Before publishing, compare both repository copies and verify that the update target is publicly accessible. Actual installation status and extension injection timing need verification in each browser.
+Version 1.0.3 adds the merged-plugin coexistence guard. The original repository retains migration version 1.0.2; the stable update URL in this repository serves later compatibility updates. Per-machine installation and extension injection timing must be checked in the relevant browser.
 
 For future updates, increase `@version` in this directory's script, preserve the name, namespace, and update URLs, and synchronize the root README and CHANGELOG.
 <!-- readme-skill:end maintenance -->

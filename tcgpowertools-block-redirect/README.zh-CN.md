@@ -3,7 +3,9 @@
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-阻止旧版 [TCG PowerTools](https://app.tcgpowertools.com/) 页面跳转到 `https://new.tcgpowertools.com/login-redirect`。当前版本：**1.0.2**。
+阻止旧版 [TCG PowerTools](https://app.tcgpowertools.com/) 页面跳转到 `https://new.tcgpowertools.com/login-redirect`。当前版本：**1.0.3**。
+
+此功能现已合并至 [P9 TCGPowerTools](../tcgpowertools-tracking/README.zh-CN.md)，默认开启。新安装请使用合并插件，并停用此独立脚本。旧文件和更新地址为兼容已有安装而保留；1.0.3 检测到合并插件时让出控制，由共享 Settings 决定是否拦截。
 
 [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [脚本源码](tcgpowertools-stay-on-legacy.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.md)
 <!-- readme-skill:end hero -->
@@ -61,7 +63,7 @@ flowchart TD
 node --check tcgpowertools-stay-on-legacy.user.js
 ```
 
-1.0.2 仅修改版本号、主页及更新地址；执行代码与旧仓库的 1.0.1 一致。发布前核对两个仓库的脚本内容一致，并验证更新目标可公开读取。各机器的实际安装状态及扩展注入时机需在对应浏览器核对。
+1.0.3 加入与合并插件共存的保护。原仓库继续保留迁移版本 1.0.2，本仓库的稳定更新地址提供后续兼容更新。各机器的实际安装状态及扩展注入时机需在对应浏览器核对。
 
 后续更新此目录中的脚本时，提高 `@version`，保留名称、namespace 和更新地址，并同步根目录的 README 及 CHANGELOG。
 <!-- readme-skill:end maintenance -->

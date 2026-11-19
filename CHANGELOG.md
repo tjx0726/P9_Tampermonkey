@@ -4,6 +4,20 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### P9 TCGPowerTools — 1.2.0
+
+- Rename the tracking tool to P9 TCGPowerTools at the owner's request, keeping its namespace and Raw update paths stable.
+- Add an opt-in setting that unlocks the legacy native Refresh Stock control during its browser cooldown, plus a manual Force Refresh Stock menu action. Both use the native callback once and preserve the site's loading, local-edit confirmation, errors, and inventory updates.
+- Merge Stay on Legacy App as a default-on preference registered at document-start.
+- Match the new domain for the launcher and Settings only. Stock/tracking actions and native order hooks remain disabled there.
+- Share preferences between legacy and new-domain tabs with Tampermonkey storage and live change listeners; migrate existing local preferences.
+- Add regression coverage for cross-domain preferences, native disabled/aria-disabled controls, userscript isolation, inaccessible third-party exports, single-flight refresh, and standalone-blocker coexistence.
+
+### tcgpowertools-block-redirect — 1.0.3
+
+- Retain the old script and update URL for compatibility, but defer to P9 TCGPowerTools when the merged plugin is present so its setting can disable redirect protection.
+- Direct new installations to the merged plugin; existing standalone installations still work independently.
+
 ### royal-mail-csv — 1.1.2
 
 - Identify TCGPowerTools as the CSV export source in both README languages, the userscript description, package metadata, and the interface subtitle.

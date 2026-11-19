@@ -1,22 +1,28 @@
-# P9 Order Tools for TCG PowerTools
+# P9 TCGPowerTools
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-适用于旧版 `https://app.tcgpowertools.com/orders` 页面的英文 Tampermonkey 工具。读取 Royal Mail Click & Drop 邮寄面单 PDF，通过 Cardmarket ID 和 PID 匹配订单并保存 tracking number，可与旧版跳转拦截脚本同时使用。
+适用于 TCG PowerTools 的英文 Tampermonkey 工具。在旧版应用中导入 Royal Mail PDF 的 tracking，原生保存后刷新订单，并可解除库存刷新的冷却限制。已包含旧版跳转保护，且默认开启。
+
+| 域名 | 可用功能 |
+| --- | --- |
+| `app.tcgpowertools.com` | Tracking 导入、库存冷却控制、原生订单刷新和旧版跳转保护 |
+| `new.tcgpowertools.com` | 仅插件入口和共享设置；库存及 tracking 操作禁用 |
 
 ## 安装与更新
 
 1. 安装并启用 [Tampermonkey](https://www.tampermonkey.net/)。
 2. 打开[安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js)，确认安装或更新。
-3. 刷新旧版订单页面，点击右下角 **P9 Order Tools**。
+3. 刷新任一支持的域名，点击右下角 **P9 TCGPowerTools**。
 
-版本 **1.1.2** 加入本仓库的更新地址，脚本名称和 namespace 保持不变。原先通过粘贴或本地地址安装、没有更新来源的副本，需要通过上方链接安装一次，并确保只保留一个启用的副本。之后从 `main` 分支检查新版，是否自动安装取决于 Tampermonkey 本地设置。
+当前版本：**1.2.0**。名称由 **P9 TCG PowerTools - Royal Mail Tracking Import** 改为现名，namespace 和更新地址保持稳定。安装改名后的脚本后，停用仍存在的旧名称 tracking 副本和独立 **TCG PowerTools - Stay on Legacy App** 脚本，只保留一个合并插件启用。没有更新来源的粘贴或本地副本需通过上方链接安装一次，之后按 Tampermonkey 本地设置从 `main` 检查更新。
 
 ## 菜单与使用
 
 - **Add Tracking Number** 打开 PDF 导入视图。
 - **Placeholder** 禁用，预留给后续功能。
-- **Settings** 包含原生操作后的列表刷新设置。
+- **Force Refresh Stock** 在旧版 **Your Stock** 页面调用一次站点原生刷新，冷却期内同样可用；位于其他旧版页面时会提示先打开库存页。
+- **Settings** 包含共享的跳转、冷却和订单刷新设置。
 
 选择邮寄面单 PDF，检查 PID、Cardmarket order ID、PDF tracking、当前 tracking 和匹配结果，然后勾选需要更新的订单。覆盖已有的不同 tracking 时启用 **Allow overwriting different tracking numbers**；相同值自动跳过。点击 **Add tracking to N selected orders**，按顺序保存并重新读取服务器记录验证。
 
@@ -35,7 +41,15 @@ PDF 在本地读取。Mozilla PDF.js 5.6.205 及其 worker 按需从 jsDelivr �
 
 ## 设置
 
-**Automatically refresh the order list after native tracking, packed, or sent changes** 默认启用。更改即时生效，并以 `p9.tcg.tracking.autoRefresh` 保存到本地存储。存储不可用时，设置仅对当前标签页生效。
+| 设置 | 默认值 | 行为 |
+| --- | --- | --- |
+| **Stay on Legacy App** | 开启 | 取消旧版应用前往新版精确 `/login-redirect` 路径且可取消的导航，其他目标仍可访问。 |
+| **Allow stock refresh during cooldown** | 关闭 | 旧版 **Your Stock** 页面的本地一小时计时仍有效时，解锁原生 **Refresh Stock** 控件；关闭后恢复原生禁用状态。 |
+| **Automatically refresh the order list after native tracking, packed, or sent changes** | 开启 | 原生保存成功后重读订单，保留 workflow、筛选和搜索条件。 |
+
+设置使用 Tampermonkey 的 `GM_getValue`/`GM_setValue` 保存，并在已打开的新旧域名标签页间同步。可在新版域名修改 **Stay on Legacy App**，旧版立即生效。已有本地偏好会迁移；用户脚本存储不可用时回退到本地存储。设置不会自动迁移至其他浏览器安装。
+
+冷却开关和菜单手动操作均只调用一次原生按钮已有的 React 事件处理器，保留站点的库存转换、本地修改确认、加载视图和错误提示。不会定时刷新，也不会自动重试。请求成功不代表 Cardmarket 生成了新导出，仍可能复用缓存。按钮适配同时支持 disabled 按钮和 `aria-disabled` 菜单项；站点事件绑定发生变化时停止操作。
 
 脚本观察成功的原生 XHR/fetch 保存操作，读取 `GET /api/user/order`，通过现有 Zustand store 的公开接口更新列表，保留当前 workflow、筛选和搜索条件。
 
@@ -69,9 +83,9 @@ npm run check
 npm test
 ```
 
-测试包含 27 项无需依赖的检查和两项可选 PDF 集成检查，覆盖新旧 reference、SKU 数量前缀、字段缺失或冲突、页面边界、匹配、去重、覆盖、上游确认、部分失败、重新读取验证、旧缓存、原生刷新、并发保存和刷新偏好。
+测试包含 41 项无需依赖的检查和两项可选 PDF 集成检查，覆盖新旧 reference、匹配与安全保存、原生订单刷新、默认跳转保护、跨域名设置、冷却解锁及恢复、原生刷新防重复、脚本隔离、不可访问的第三方导出对象，以及与独立拦截脚本共存。
 
-实际 PDF 和独立核对的预期记录保留在此公开仓库之外。每份预期文件为 JSON 数组，元素包含 `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`。提供两份 PDF 及对应的私有预期文件，可执行全部 29 项检查：
+实际 PDF 和独立核对的预期记录保留在此公开仓库之外。每份预期文件为 JSON 数组，元素包含 `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`。提供两份 PDF 及对应的私有预期文件，可执行全部 43 项检查：
 
 ```sh
 LABEL_PDF='/private/path/combined-label.pdf' LABEL_EXPECTATIONS='/private/path/combined-expected.json' SPLIT_LABEL_PDF='/private/path/split-label.pdf' SPLIT_LABEL_EXPECTATIONS='/private/path/split-expected.json' PDFJS_MODULE='/absolute/path/to/pdfjs-dist/legacy/build/pdf.mjs' npm test

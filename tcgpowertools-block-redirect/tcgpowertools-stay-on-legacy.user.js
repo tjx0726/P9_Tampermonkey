@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TCG PowerTools - Stay on Legacy App
 // @namespace    local.tcgpowertools
-// @version      1.0.2
+// @version      1.0.3
 // @description  Prevent the legacy app from redirecting this tab to the new app's login redirect.
 // @match        https://app.tcgpowertools.com/*
 // @run-at       document-start
@@ -22,6 +22,9 @@
   }
 
   window.navigation.addEventListener('navigate', (event) => {
+    // P9 TCGPowerTools now owns this feature and its shared preferences.
+    // Keep this old update URL working without adding a second blocker.
+    if (window.P9TCGPowerTools) return;
     const destination = new URL(event.destination.url);
 
     if (

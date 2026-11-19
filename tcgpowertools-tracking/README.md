@@ -1,22 +1,28 @@
-# P9 Order Tools for TCG PowerTools
+# P9 TCGPowerTools
 
 [English](README.md) · [中文](README.zh-CN.md)
 
-An English Tampermonkey interface for the legacy `https://app.tcgpowertools.com/orders` page. It reads Royal Mail Click & Drop shipping label PDFs, matches orders by Cardmarket ID and PID, and saves tracking numbers. It can run alongside the legacy redirect blocker.
+An English Tampermonkey interface for TCG PowerTools. On the legacy app it imports tracking from Royal Mail PDFs, refreshes orders after native saves, and optionally unlocks stock refresh during cooldown. Legacy redirect protection is included and enabled by default.
+
+| Domain | Available features |
+| --- | --- |
+| `app.tcgpowertools.com` | Tracking import, stock cooldown control, native order refresh, and legacy redirect protection |
+| `new.tcgpowertools.com` | Plugin launcher and shared Settings only; stock and tracking actions are disabled |
 
 ## Installation and updates
 
 1. Install and enable [Tampermonkey](https://www.tampermonkey.net/).
 2. Open [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) and confirm installation or update.
-3. Reload the legacy orders page and click **P9 Order Tools** at the bottom right.
+3. Reload either supported domain and click **P9 TCGPowerTools** at the bottom right.
 
-Version **1.1.2** adds this repository's update URLs. The script name and namespace are preserved. A previously pasted or locally installed copy without an update source needs a one-time installation through the link above; keep only one enabled copy. Future checks use the `main` branch and follow Tampermonkey's local update and automatic-installation settings.
+Current version: **1.2.0**. The name has changed from **P9 TCG PowerTools - Royal Mail Tracking Import**; the namespace and update URLs remain stable. After installing the renamed script, disable any remaining old-name tracking copy and the separate **TCG PowerTools - Stay on Legacy App** script. Keep one merged plugin enabled. A pasted or local copy without an update source needs a one-time installation through the link above. Future checks use `main` and follow Tampermonkey's local update settings.
 
 ## Menu and use
 
 - **Add Tracking Number** opens the PDF import view.
 - **Placeholder** is disabled and reserved for a future feature.
-- **Settings** contains the native order-list refresh preference.
+- **Force Refresh Stock** invokes the site's original stock refresh once on the legacy **Your Stock** page, even during cooldown. On another legacy page it explains where to open the action.
+- **Settings** contains shared redirect, cooldown, and order-refresh preferences.
 
 Choose a shipping label PDF, review the PID, Cardmarket order ID, PDF tracking, current tracking, and match result, then select the required orders. Enable **Allow overwriting different tracking numbers** when replacing an existing value. Identical values are skipped. **Add tracking to N selected orders** saves selected orders sequentially and verifies the server records.
 
@@ -35,7 +41,15 @@ PDFs are read locally. Mozilla PDF.js 5.6.205 and its worker are loaded on deman
 
 ## Settings
 
-**Automatically refresh the order list after native tracking, packed, or sent changes** is enabled by default. Changes take effect immediately and are saved in local storage under `p9.tcg.tracking.autoRefresh`. If storage is unavailable, the setting applies for the current tab.
+| Setting | Default | Behavior |
+| --- | --- | --- |
+| **Stay on Legacy App** | On | Cancel cancelable navigation from the legacy app to the new app's exact `/login-redirect` path. Other destinations remain available. |
+| **Allow stock refresh during cooldown** | Off | Unlock the original **Refresh Stock** control on the legacy **Your Stock** page while its local one-hour timer is active. Turning it off restores native disabled state. |
+| **Automatically refresh the order list after native tracking, packed, or sent changes** | On | Reload orders after successful native saves without resetting workflow, filters, or search. |
+
+Preferences are stored with Tampermonkey's `GM_getValue`/`GM_setValue` and synchronized between open legacy and new-domain tabs. You can change **Stay on Legacy App** on the new domain and it takes effect on the legacy domain immediately. Existing local preferences are migrated; local storage is a fallback when userscript storage is unavailable. Preferences do not transfer to another browser installation.
+
+The cooldown switch and manual menu action call the native button's existing React event handler once, preserving the site's stock hydration, local-edit confirmation, loading view, and errors. There is no polling refresh schedule or automatic retry. A successful request does not establish that Cardmarket generated a new export instead of reusing cached data. The button adapter supports both disabled buttons and `aria-disabled` menuitems; if the site's event binding changes, it fails closed.
 
 The script observes successful native XHR/fetch saves, reads `GET /api/user/order`, and updates the existing Zustand store through its public interface. The selected workflow, filters, and search remain in place.
 
@@ -69,9 +83,9 @@ npm run check
 npm test
 ```
 
-The suite has 27 dependency-free checks and two optional PDF integration checks. It covers both reference formats, SKU quantity prefixes, missing/conflicting fields, page boundaries, matching, duplicates, overwrites, upstream confirmation, partial failures, readback, stale caches, native refresh, concurrent saves, and the saved refresh preference.
+The suite has 41 dependency-free checks and two optional PDF integration checks. It covers both reference formats, matching and safe saves, native order refresh, default redirect protection, cross-domain preferences, cooldown unlock/restoration, native single-flight refresh, userscript isolation, inaccessible third-party exports, and standalone-blocker coexistence.
 
-Real PDFs and independently checked expected records stay outside this public repository. Each expectations file is a JSON array of `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`. Supply both PDFs and their private expectation files to run all 29 checks:
+Real PDFs and independently checked expected records stay outside this public repository. Each expectations file is a JSON array of `{ page, orderCode, cardmarketOrderId, trackingNumber, error }`. Supply both PDFs and their private expectation files to run all 43 checks:
 
 ```sh
 LABEL_PDF='/private/path/combined-label.pdf' LABEL_EXPECTATIONS='/private/path/combined-expected.json' SPLIT_LABEL_PDF='/private/path/split-label.pdf' SPLIT_LABEL_EXPECTATIONS='/private/path/split-expected.json' PDFJS_MODULE='/absolute/path/to/pdfjs-dist/legacy/build/pdf.mjs' npm test

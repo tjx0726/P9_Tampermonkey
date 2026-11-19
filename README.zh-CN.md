@@ -12,8 +12,8 @@
 | 脚本 | 版本 | 用途 | 安装 | 说明 |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | 处理 TCGPowerTools 导出的 CSV。 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
-| P9 Order Tools for TCG PowerTools | 1.1.2 | 读取 Royal Mail 面单 PDF，通过 Cardmarket ID 和 PID 匹配并填写 tracking，原生保存后自动刷新订单 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App | 1.0.2 | 阻止旧版 TCG PowerTools 页面跳转到新版的 login-redirect 入口 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| P9 TCGPowerTools | 1.2.0 | Tracking 导入、库存冷却控制、原生订单刷新、默认开启的旧版跳转保护，以及新版域名入口和设置 | [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
+| TCG PowerTools - Stay on Legacy App（仅兼容旧安装） | 1.0.3 | 为已有安装保留，功能现已合并至 P9 TCGPowerTools | [使用合并插件](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
@@ -24,6 +24,8 @@
 3. 刷新脚本适用的网页，按该脚本的使用说明操作。
 
 已有手动粘贴或从本地地址安装、没有更新来源的脚本时，需要通过上方对应链接安装一次本仓库版本，以保存更新地址。若提示更新现有脚本，确认更新；安装后检查每个脚本只保留一个启用的副本。
+
+安装 **P9 TCGPowerTools** 后，请停用旧名称 tracking 导入器和独立 **Stay on Legacy App** 脚本，合并插件已包含拦截功能。在 `new.tcgpowertools.com` 当前仅提供入口和共享设置，库存及 tracking 操作保持禁用。
 
 每个脚本的 `@updateURL` 和 `@downloadURL` 指向本仓库 `main` 分支中自己的文件。Tampermonkey 按本地检查周期比较 `@version`，并根据「自动安装」设置处理新版。请在 Tampermonkey 中启用更新检查，并按需要启用自动安装。
 
@@ -68,7 +70,8 @@ P9_Tampermonkey/
     └── test/
         ├── importer.test.cjs
         ├── refresh.test.cjs
-        └── pdf-sample.test.cjs
+        ├── pdf-sample.test.cjs
+        └── tools.test.cjs
 ```
 
 `orders.csv` 是虚构的测试数据。实际订单、处理结果、浏览器截图和凭据不应提交到此公开仓库。

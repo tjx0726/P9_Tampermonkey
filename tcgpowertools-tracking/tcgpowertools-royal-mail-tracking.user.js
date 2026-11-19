@@ -1,12 +1,16 @@
 // ==UserScript==
-// @name         P9 TCG PowerTools - Royal Mail Tracking Import
+// @name         P9 TCGPowerTools
 // @namespace    local.p9.tcgpowertools
-// @version      1.1.2
-// @description  Read Royal Mail label PDFs locally, match PID and Cardmarket order ID, and save tracking with verified results. Refresh orders after native tracking/state changes.
+// @version      1.2.0
+// @description  P9 tools for TCG PowerTools: label tracking import, stock cooldown control, native refresh, and legacy redirect protection.
 // @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/tcgpowertools-tracking
 // @match        https://app.tcgpowertools.com/*
+// @match        https://new.tcgpowertools.com/*
 // @run-at       document-start
-// @grant        none
+// @grant        GM_getValue
+// @grant        GM_setValue
+// @grant        GM_addValueChangeListener
+// @grant        unsafeWindow
 // @sandbox      raw
 // @noframes
 // @updateURL    https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js
@@ -16,8 +20,13 @@
 (() => {
   'use strict';
 
-  const VERSION = '1.1.2';
+  const VERSION = '1.2.0';
+  const TOOL_NAME = 'P9 TCGPowerTools';
   const AUTO_REFRESH_KEY = 'p9.tcg.tracking.autoRefresh';
+  const STOCK_COOLDOWN_KEY = 'p9.tcg.tools.stockCooldownBypass';
+  const STAY_LEGACY_KEY = 'p9.tcg.tools.stayOnLegacy';
+  const LEGACY_ORIGIN = 'https://app.tcgpowertools.com';
+  const NEW_ORIGIN = 'https://new.tcgpowertools.com';
   const PDF_BASE = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@5.6.205/build/';
   const normalizeTracking = (value) => String(value ?? '').replace(/\s+/g, '').toUpperCase();
   const orderId = (order) => String(order.idOrder);
@@ -182,13 +191,32 @@
     } catch { return false; }
   }
 
-  const core = { normalizeTracking, parseLabelText, extractPdf, matchLabels, saveTracking, verifySaved, isOrderMutation };
+  function isLegacyRedirect(url) {
+    try {
+      const destination = new URL(url);
+      return destination.origin === NEW_ORIGIN && /^\/login-redirect\/?$/.test(destination.pathname);
+    } catch { return false; }
+  }
+
+  function nativeStockHandler(button) {
+    // Read only the DOM button's bound React event props. Do not traverse fibers
+    // or change feature flags: the original callback owns fetching, confirmation,
+    // error handling, hydration, and rendering on each version of the site.
+    const key = Object.keys(button || {}).find((name) => /^__react(?:Props|EventHandlers)\$/.test(name));
+    const props = key ? button[key] : null;
+    if (typeof props?.onClick !== 'function') throw new Error('The native stock refresh action is unavailable. Reload Your Stock and try again.');
+    const disabled = typeof props.disabled === 'boolean' ? props.disabled : props['aria-disabled'] === true || props['aria-disabled'] === 'true';
+    return { handler: props.onClick, props, disabled };
+  }
+
+  const core = { normalizeTracking, parseLabelText, extractPdf, matchLabels, saveTracking, verifySaved, isOrderMutation, isLegacyRedirect, nativeStockHandler };
   if (typeof module === 'object' && module.exports) {
     module.exports = core;
     return;
   }
-  if (window.top !== window.self || location.origin !== 'https://app.tcgpowertools.com') return;
-  if (window.P9TrackingImporter) return;
+  const page = typeof unsafeWindow === 'object' && unsafeWindow ? unsafeWindow : window;
+  if (page.top !== page.self || ![LEGACY_ORIGIN, NEW_ORIGIN].includes(location.origin)) return;
+  if (page.P9TCGPowerTools || page.P9TrackingImporter) return;
 
   let host;
   let ui;
@@ -204,11 +232,72 @@
   let refreshPromise;
   let pdfPromise;
   let appStore;
+  let appRuntime;
+  let stockBusy = false;
+  let stockGatePending = false;
+  let stockIdentity;
+  let lastRoute = '';
+  let stockMessage = 'Use the native stock refresh even while its browser cooldown is active.';
+  const unlockedStockButtons = new Map();
   let autoRefresh = true;
-  try { autoRefresh = window.localStorage.getItem(AUTO_REFRESH_KEY) !== 'false'; } catch { /* Storage may be unavailable. */ }
+  const readPreference = (key, fallback) => {
+    try {
+      const shared = typeof GM_getValue === 'function' ? GM_getValue(key) : undefined;
+      if (typeof shared === 'boolean') return shared;
+      const value = page.localStorage.getItem(key);
+      if (value !== null && typeof GM_setValue === 'function') GM_setValue(key, value !== 'false');
+      return value === null ? fallback : value !== 'false';
+    }
+    catch { return fallback; }
+  };
+  autoRefresh = readPreference(AUTO_REFRESH_KEY, true);
+  let stockCooldownBypass = readPreference(STOCK_COOLDOWN_KEY, false);
+  let stayOnLegacy = readPreference(STAY_LEGACY_KEY, true);
   let statusText = 'Choose a shipping label PDF, review the matched orders, then add tracking.';
   let statusError = false;
   const outcomes = new Map();
+
+  function preferences() { return { autoRefresh, stockCooldownBypass, stayOnLegacy }; }
+
+  function applyPreference(key, value) {
+    if (key === AUTO_REFRESH_KEY) {
+      autoRefresh = value;
+      if (!autoRefresh) clearTimeout(refreshTimer);
+      else if (refreshNeeded) scheduleRefresh();
+    } else if (key === STOCK_COOLDOWN_KEY) stockCooldownBypass = value;
+    else if (key === STAY_LEGACY_KEY) stayOnLegacy = value;
+    if (ui) {
+      ui.querySelector('#auto').checked = autoRefresh;
+      ui.querySelector('#stock-cooldown').checked = stockCooldownBypass;
+      ui.querySelector('#stay-legacy').checked = stayOnLegacy;
+    }
+    stockIdentity = null;
+    void syncStockGate();
+  }
+
+  function setPreference(key, value) {
+    if (![AUTO_REFRESH_KEY, STOCK_COOLDOWN_KEY, STAY_LEGACY_KEY].includes(key) || typeof value !== 'boolean') throw new Error('Unknown preference.');
+    let saved = false;
+    if (typeof GM_setValue === 'function') { GM_setValue(key, value); saved = true; }
+    try { page.localStorage.setItem(key, String(value)); saved = true; } catch { /* Shared storage can still work. */ }
+    applyPreference(key, value);
+    if (ui) ui.querySelector('#settings-status').textContent = saved
+      ? (typeof GM_setValue === 'function' ? 'Preferences saved for this script across both domains.' : 'Preference saved on this domain.')
+      : 'Preference applied for this tab. Browser storage is unavailable.';
+  }
+
+  if (typeof GM_addValueChangeListener === 'function') {
+    for (const key of [AUTO_REFRESH_KEY, STOCK_COOLDOWN_KEY, STAY_LEGACY_KEY]) GM_addValueChangeListener(key, (name, old, value) => {
+      if (typeof value === 'boolean') applyPreference(name, value);
+    });
+  }
+
+  // Register at document-start, before the legacy app can initiate migration.
+  if (location.origin === LEGACY_ORIGIN) page.navigation?.addEventListener('navigate', (event) => {
+    if (!stayOnLegacy || !isLegacyRedirect(event.destination?.url)) return;
+    if (event.cancelable) event.preventDefault();
+    else console.warn('[P9 TCGPowerTools] The automatic redirect was not cancelable.');
+  });
 
   function status(message, error = false) {
     statusText = message;
@@ -219,20 +308,27 @@
     }
   }
 
-  function findStore() {
-    if (appStore) return appStore;
-    const chunks = window['webpackJsonppowertools-client'];
-    if (!Array.isArray(chunks)) throw new Error('The legacy app order module was not found. Reload the page or check script compatibility.');
+  function findRuntime() {
+    if (appRuntime) return appRuntime;
+    const chunks = page['webpackJsonppowertools-client'];
+    if (!Array.isArray(chunks)) throw new Error('The app module is not ready. Reload the page or check script compatibility.');
     let runtime;
     const key = `p9_tracking_${Date.now()}_${Math.random().toString(36).slice(2)}`;
     chunks.push([[key], { [key]: (module, exports, require) => { runtime = require; } }, [[key]]]);
     if (!runtime?.c) throw new Error('Could not connect to the legacy app state manager.');
+    delete runtime.m[key];
+    delete runtime.c[key];
+    appRuntime = runtime;
+    return runtime;
+  }
+
+  function findStore() {
+    if (appStore) return appStore;
+    const runtime = findRuntime();
     // Discover the already-loaded Zustand store by its public interface, not a
     // hardcoded webpack module number or React's private fiber properties.
-    for (const entry of Object.values(runtime.c)) {
-      const exports = entry.exports;
-      if (!exports || !['object', 'function'].includes(typeof exports)) continue;
-      for (const candidate of [exports, ...Object.values(exports)]) {
+    for (const candidate of loadedExports(runtime)) {
+      try {
         if (typeof candidate?.getState !== 'function' || typeof candidate?.setState !== 'function') continue;
         const state = candidate.getState();
         if (Array.isArray(state?.orders) && Array.isArray(state.rawOrders)
@@ -240,20 +336,30 @@
           appStore = candidate;
           break;
         }
-      }
-      if (appStore) break;
+      } catch { /* Third-party modules can export inaccessible cross-origin Window proxies. */ }
     }
-    delete runtime.m[key];
-    delete runtime.c[key];
     if (!appStore) throw new Error('The order state module is not ready. Please try again shortly.');
     return appStore;
+  }
+
+  function loadedExports(runtime) {
+    const values = [];
+    for (const entry of Object.values(runtime.c)) {
+      try {
+        const value = entry.exports;
+        if (!value || !['object', 'function'].includes(typeof value)) continue;
+        values.push(value);
+        if (value !== page) values.push(...Object.values(value));
+      } catch { /* Ignore unrelated or inaccessible module exports. */ }
+    }
+    return values;
   }
 
   async function request(path, { method = 'GET', body } = {}) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 30000);
     try {
-      const response = await fetch(path, {
+      const response = await page.fetch(path, {
         method, credentials: 'same-origin', cache: 'no-store', signal: controller.signal,
         ...(body === undefined ? {} : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }),
       });
@@ -270,7 +376,118 @@
     } finally { clearTimeout(timeout); }
   }
 
+  function isStockPage() { return location.origin === LEGACY_ORIGIN && /^\/stock-pricing\/?$/.test(location.pathname); }
+
+  function restoreStockButtons() {
+    for (const [button, saved] of unlockedStockButtons) {
+      let props;
+      let disabled = saved.disabled;
+      try { ({ props, disabled } = nativeStockHandler(button)); } catch { /* Restore the captured attributes if the adapter disappeared. */ }
+      if ('disabled' in button) button.disabled = disabled;
+      button.style.pointerEvents = props?.style ? props.style.pointerEvents || '' : saved.pointerEvents;
+      button.classList.toggle('Mui-disabled', disabled && saved.muiDisabled);
+      if (saved.ariaDisabled === null) button.removeAttribute('aria-disabled');
+      else button.setAttribute('aria-disabled', String(disabled));
+      if (saved.title === null) button.removeAttribute('title');
+      else button.setAttribute('title', saved.title);
+      button.removeAttribute('data-p9-cooldown-unlocked');
+      unlockedStockButtons.delete(button);
+    }
+  }
+
+  async function stockCooldown() {
+    let game;
+    try { game = Number(JSON.parse(page.localStorage.getItem('activeGameId') || '"1"')); }
+    catch { throw new Error('Could not read the selected game. Reopen Your Stock.'); }
+    if (!Number.isSafeInteger(game) || game < 1) throw new Error('The selected game is unavailable.');
+    if (!stockIdentity || stockIdentity.game !== game) {
+      const runtime = findRuntime();
+      let database;
+      for (const candidate of loadedExports(runtime)) {
+        try {
+          if (typeof candidate?.getItem !== 'function' || typeof candidate?.setItem !== 'function' || typeof candidate?.config !== 'function') continue;
+          if (candidate.config()?.name === 'Powertools-v2') database = candidate;
+        } catch { /* Ignore cross-origin frames exported by unrelated modules. */ }
+      }
+      if (!database) throw new Error('The stock cache is not ready. Reopen Your Stock.');
+      const profile = await request('/api/user');
+      if (!profile?.cardmarketUsername) throw new Error('Connect a Cardmarket account first.');
+      const cache = await database.getItem(`${game}-${profile.cardmarketUsername}-stock`);
+      if (!cache || !Number.isFinite(cache.fetchedAtTimestamp)) throw new Error('Refresh stock normally once before enabling the cooldown bypass.');
+      stockIdentity = { game, fetchedAt: cache.fetchedAtTimestamp, paginated: profile.featureFlags?.paginatedStock === true };
+    }
+    const elapsed = Date.now() - stockIdentity.fetchedAt;
+    return !stockIdentity.paginated && elapsed >= 0 && elapsed < 3600000;
+  }
+
+  async function syncStockGate() {
+    if (!stockCooldownBypass || !isStockPage() || stockBusy || busy) { restoreStockButtons(); return; }
+    const button = document.querySelector('[data-testid="get-stock-btn"]');
+    if (!button) { restoreStockButtons(); return; }
+    let nativeDisabled;
+    try { nativeDisabled = nativeStockHandler(button).disabled; } catch { restoreStockButtons(); return; }
+    if (!nativeDisabled) { restoreStockButtons(); return; }
+    // Loading and confirmation dialogs keep their own native lock.
+    if ([...document.querySelectorAll('[role="dialog"]')].some((dialog) => dialog.getClientRects().length)) { restoreStockButtons(); return; }
+    if (stockGatePending) return;
+    stockGatePending = true;
+    try {
+      if (!await stockCooldown()) { restoreStockButtons(); return; }
+      if (!stockCooldownBypass || !isStockPage() || stockBusy || busy || !button.isConnected) return;
+      if (!unlockedStockButtons.has(button)) unlockedStockButtons.set(button, {
+        disabled: button.disabled, pointerEvents: button.style.pointerEvents,
+        ariaDisabled: button.getAttribute('aria-disabled'), title: button.getAttribute('title'), muiDisabled: button.classList.contains('Mui-disabled'),
+      });
+      if ('disabled' in button && button.disabled) button.disabled = false;
+      if (button.classList.contains('Mui-disabled')) button.classList.remove('Mui-disabled');
+      if (button.style.pointerEvents !== 'auto') button.style.pointerEvents = 'auto';
+      if (button.getAttribute('aria-disabled') === 'true') button.setAttribute('aria-disabled', 'false');
+      if (button.getAttribute('data-p9-cooldown-unlocked') !== 'true') button.setAttribute('data-p9-cooldown-unlocked', 'true');
+      if (button.getAttribute('title') !== 'Refresh stock during cooldown') button.setAttribute('title', 'Refresh stock during cooldown');
+      if (stockMessage.startsWith('Cooldown bypass unavailable:')) {
+        stockMessage = 'Cooldown bypass is active for the native Refresh Stock button.';
+        if (ui) ui.querySelector('#stock-status').textContent = stockMessage;
+      }
+    } catch (error) {
+      restoreStockButtons();
+      stockMessage = `Cooldown bypass unavailable: ${error.message}`;
+      if (ui) ui.querySelector('#stock-status').textContent = stockMessage;
+    } finally { stockGatePending = false; }
+  }
+
+  async function refreshStock(event) {
+    if (location.origin !== LEGACY_ORIGIN) throw new Error('Stock actions are not enabled on the new domain yet.');
+    if (stockBusy || busy) return;
+    if (!isStockPage()) {
+      stockMessage = 'Open Your Stock first, then use Force Refresh Stock.';
+      if (ui) ui.querySelector('#stock-status').textContent = stockMessage;
+      return;
+    }
+    const button = document.querySelector('[data-testid="get-stock-btn"]');
+    const { handler } = nativeStockHandler(button);
+    stockBusy = true;
+    restoreStockButtons();
+    if (ui?.querySelector('dialog').open) ui.querySelector('dialog').close();
+    updateControls();
+    try {
+      // Call the existing action once. The site owns stock loading, local edits,
+      // confirmation, server errors, and the actual inventory state update.
+      await handler.call(button, event);
+      stockMessage = 'Native stock refresh requested. Check the site for completion or errors.';
+    } catch (error) {
+      stockMessage = `Stock refresh failed: ${error.message}. The request was not retried.`;
+      throw error;
+    } finally {
+      stockBusy = false;
+      stockIdentity = null;
+      if (ui) ui.querySelector('#stock-status').textContent = stockMessage;
+      updateControls();
+      void syncStockGate();
+    }
+  }
+
   async function readOrders() {
+    if (location.origin !== LEGACY_ORIGIN) throw new Error('Tracking actions are not enabled on the new domain yet.');
     const result = await request('/api/user/order');
     if (!Array.isArray(result) || result.some((order) => order.idOrder == null || !order.pt || !order.state)) {
       throw new Error('The order response has an unexpected format. The operation was stopped.');
@@ -320,14 +537,15 @@
 
   // Observe successful native saves, including Axios/XHR. Requests are neither
   // altered nor replayed. The importer suppresses refreshes during its batch.
-  const originalOpen = XMLHttpRequest.prototype.open;
-  const originalSend = XMLHttpRequest.prototype.send;
+  if (location.origin === LEGACY_ORIGIN) {
+  const originalOpen = page.XMLHttpRequest.prototype.open;
+  const originalSend = page.XMLHttpRequest.prototype.send;
   const xhrWrites = new WeakMap();
-  XMLHttpRequest.prototype.open = function (method, url, ...rest) {
+  page.XMLHttpRequest.prototype.open = function (method, url, ...rest) {
     xhrWrites.set(this, isOrderMutation(url, method, location.origin));
     return originalOpen.call(this, method, url, ...rest);
   };
-  XMLHttpRequest.prototype.send = function (...args) {
+  page.XMLHttpRequest.prototype.send = function (...args) {
     if (!xhrWrites.get(this)) return originalSend.apply(this, args);
     pendingWrites += 1;
     let settled = false;
@@ -339,8 +557,8 @@
     this.addEventListener('loadend', done, { once: true });
     try { return originalSend.apply(this, args); } catch (error) { done(); throw error; }
   };
-  const originalFetch = window.fetch;
-  window.fetch = function (input, init) {
+  const originalFetch = page.fetch;
+  page.fetch = function (input, init) {
     const watched = isOrderMutation(typeof input === 'string' || input instanceof URL ? input : input?.url,
       init?.method || input?.method || 'GET', location.origin);
     if (!watched) return originalFetch.call(this, input, init);
@@ -353,6 +571,7 @@
       writeFinished(succeeded);
     });
   };
+  }
 
   const rowKey = (row) => `${row.page}:${row.cardmarketOrderId}`;
   const overwrite = () => !!ui?.querySelector('#overwrite').checked;
@@ -395,14 +614,15 @@
   function updateControls() {
     if (!ui) return;
     const selected = rows.filter((row) => row.selected && row.eligible).length;
-    ui.querySelector('#apply').disabled = busy || !selected;
+    ui.querySelector('#apply').disabled = busy || stockBusy || !selected;
     ui.querySelector('#apply').textContent = `Add tracking to ${selected} selected order${selected === 1 ? '' : 's'}`;
     ui.querySelector('#file').disabled = busy;
     ui.querySelector('#overwrite').disabled = busy;
     ui.querySelector('#refresh').disabled = busy;
     ui.querySelector('#stop').hidden = !applying;
-    ui.querySelector('#close').disabled = busy;
-    ui.querySelector('#back').disabled = busy;
+    ui.querySelector('#close').disabled = busy || stockBusy;
+    ui.querySelector('#back').disabled = busy || stockBusy;
+    ui.querySelector('#menu-stock').disabled = location.origin !== LEGACY_ORIGIN || busy || stockBusy;
     ui.querySelector('#summary').textContent = rows.length
       ? `${rows.length} page${rows.length === 1 ? '' : 's'} · Ready ${rows.filter((r) => r.eligible).length} · Already set ${rows.filter((r) => r.same).length} · Review ${rows.filter((r) => !r.eligible && !r.same).length}`
       : 'No PDF selected';
@@ -522,14 +742,15 @@
         .menu button:disabled{background:#f4f6f8;color:#81909d}.setting{align-items:flex-start;padding:14px 0}.setting input{flex-shrink:0;margin-top:3px}.setting small{margin-top:5px;font-weight:400}
         #settings-status{margin-bottom:0;font-size:12px}
       </style>
-      <button id="launch" type="button">P9 Order Tools</button>
+      <button id="launch" type="button">${TOOL_NAME}</button>
       <dialog aria-labelledby="title" data-view="menu">
-        <div class="head"><div><button id="back" type="button" hidden>← Back to Menu</button><h2 id="title">P9 Order Tools</h2></div><button id="close" type="button" aria-label="Close">×</button></div>
+        <div class="head"><div><button id="back" type="button" hidden>← Back to Menu</button><h2 id="title">${TOOL_NAME}</h2></div><button id="close" type="button" aria-label="Close">×</button></div>
         <section id="menu-view">
           <p class="muted">Choose an action.</p>
-          <nav class="menu" aria-label="Order tools menu">
+          <nav class="menu" aria-label="P9 tools menu">
             <button id="menu-tracking" class="primary" type="button">Add Tracking Number</button>
             <button id="menu-placeholder" type="button" disabled title="Reserved for a future feature">Placeholder</button>
+            <button id="menu-stock" type="button">Force Refresh Stock</button>
             <button id="menu-settings" type="button">Settings</button>
           </nav>
         </section>
@@ -543,16 +764,20 @@
           <small>Tracking is saved through the site's original actions and verified by reloading orders. Importing tracking does not change packed or sent statuses.</small>
         </section>
         <section id="settings-view" hidden>
-          <p class="muted">Order handling preferences for this browser.</p>
+          <p class="muted">Preferences are shared by this script across the legacy and new domains.</p>
+          <p id="new-domain-note" class="muted" hidden>The new domain currently supports the launcher and shared settings only. Stock and tracking actions remain disabled here.</p>
+          <label class="setting"><input id="stay-legacy" type="checkbox"><span>Stay on Legacy App<small>Block automatic navigation from the legacy app to the new app's login-redirect page. Enabled by default; takes effect immediately on open legacy tabs.</small></span></label>
+          <label class="setting"><input id="stock-cooldown" type="checkbox"><span>Allow stock refresh during cooldown<small>Unlock the native Refresh Stock button on the legacy Your Stock page. Uses the site's own loading, confirmation and error handling. Disabled by default.</small></span></label>
+          <p id="stock-status" class="muted" role="status" aria-live="polite"></p>
           <label class="setting"><input id="auto" type="checkbox"><span>Automatically refresh the order list after native tracking, packed, or sent changes<small>Keep orders up to date after using the site's own tracking and status actions.</small></span></label>
-          <p id="settings-status" class="muted" role="status" aria-live="polite">Changes are saved automatically in this browser.</p>
+          <p id="settings-status" class="muted" role="status" aria-live="polite">Changes are saved automatically for this script.</p>
         </section>
       </dialog>`;
     document.body.append(host);
     const dialog = ui.querySelector('dialog');
-    const views = { menu: 'P9 Order Tools', tracking: 'Add Tracking Number', settings: 'Settings' };
+    const views = { menu: TOOL_NAME, tracking: 'Add Tracking Number', settings: 'Settings' };
     const showView = (view) => {
-      if (busy) return;
+      if (busy || stockBusy) return;
       for (const name of Object.keys(views)) ui.querySelector(`#${name}-view`).hidden = name !== view;
       ui.querySelector('#title').textContent = views[view];
       ui.querySelector('#back').hidden = view === 'menu';
@@ -566,23 +791,25 @@
     });
     ui.querySelector('#menu-tracking').addEventListener('click', () => showView('tracking'));
     ui.querySelector('#menu-settings').addEventListener('click', () => showView('settings'));
+    ui.querySelector('#menu-stock').addEventListener('click', (event) => {
+      if (!isStockPage()) showView('settings');
+      void refreshStock(event).catch((error) => { stockMessage = error.message; ui.querySelector('#stock-status').textContent = stockMessage; });
+    });
     ui.querySelector('#back').addEventListener('click', () => showView('menu'));
     ui.querySelector('#close').addEventListener('click', () => dialog.close());
-    dialog.addEventListener('cancel', (event) => { if (busy) event.preventDefault(); });
+    dialog.addEventListener('cancel', (event) => { if (busy || stockBusy) event.preventDefault(); });
     ui.querySelector('#file').addEventListener('change', (event) => loadFile(event.target.files[0]));
     ui.querySelector('#overwrite').addEventListener('change', reconcile);
     ui.querySelector('#auto').checked = autoRefresh;
-    ui.querySelector('#auto').addEventListener('change', (event) => {
-      autoRefresh = event.target.checked;
-      if (!autoRefresh) clearTimeout(refreshTimer);
-      else if (refreshNeeded) scheduleRefresh();
-      try {
-        window.localStorage.setItem(AUTO_REFRESH_KEY, String(autoRefresh));
-        ui.querySelector('#settings-status').textContent = 'Preference saved in this browser.';
-      } catch {
-        ui.querySelector('#settings-status').textContent = 'Preference applied for this tab. Browser storage is unavailable.';
-      }
-    });
+    ui.querySelector('#stock-cooldown').checked = stockCooldownBypass;
+    ui.querySelector('#stay-legacy').checked = stayOnLegacy;
+    ui.querySelector('#auto').addEventListener('change', (event) => setPreference(AUTO_REFRESH_KEY, event.target.checked));
+    ui.querySelector('#stock-cooldown').addEventListener('change', (event) => setPreference(STOCK_COOLDOWN_KEY, event.target.checked));
+    ui.querySelector('#stay-legacy').addEventListener('change', (event) => setPreference(STAY_LEGACY_KEY, event.target.checked));
+    ui.querySelector('#stock-status').textContent = stockMessage;
+    const newDomain = location.origin === NEW_ORIGIN;
+    ui.querySelector('#new-domain-note').hidden = !newDomain;
+    for (const id of ['menu-tracking', 'auto', 'stock-cooldown']) ui.querySelector(`#${id}`).disabled = newDomain;
     ui.querySelector('#stop').addEventListener('click', () => { stopRequested = true; status('Will stop after the current order has been saved and verified.'); });
     ui.querySelector('#apply').addEventListener('click', applySelected);
     ui.querySelector('#refresh').addEventListener('click', async () => {
@@ -597,16 +824,30 @@
     status(statusText, statusError);
     updateControls();
     const updateRoute = () => {
-      host.hidden = !/^\/orders(?:\/|$)/.test(location.pathname);
-      if (host.hidden && dialog.open && !busy) dialog.close();
+      host.hidden = false;
+      const route = `${location.origin}${location.pathname}`;
+      if (route !== lastRoute) { lastRoute = route; stockIdentity = null; }
+      void syncStockGate();
     };
     updateRoute();
-    window.addEventListener('popstate', updateRoute);
-    window.navigation?.addEventListener('navigatesuccess', updateRoute);
+    page.addEventListener('popstate', updateRoute);
+    page.navigation?.addEventListener('navigatesuccess', updateRoute);
     setInterval(updateRoute, 1500);
+    if (location.origin === LEGACY_ORIGIN) {
+      document.addEventListener('click', (event) => {
+        const button = event.target?.closest?.('[data-testid="get-stock-btn"]');
+        if (!stockCooldownBypass || !button || !unlockedStockButtons.has(button)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        void refreshStock(event).catch((error) => { stockMessage = error.message; ui.querySelector('#stock-status').textContent = stockMessage; });
+      }, true);
+      const observer = new MutationObserver(() => { void syncStockGate(); });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['disabled', 'aria-disabled', 'style', 'class'] });
+    }
   }
 
-  window.P9TrackingImporter = Object.freeze({ version: VERSION, refreshOrders });
+  page.P9TCGPowerTools = Object.freeze({ version: VERSION, preferences, setPreference, refreshOrders, refreshStock, syncStockGate });
+  page.P9TrackingImporter = page.P9TCGPowerTools;
   if (document.body) mount();
   else document.addEventListener('DOMContentLoaded', mount, { once: true });
 })();

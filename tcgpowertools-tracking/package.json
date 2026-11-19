@@ -1,6 +1,6 @@
 {
   "name": "p9-tcgpowertools-tracking",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "check": "node --check tcgpowertools-royal-mail-tracking.user.js",
