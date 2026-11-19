@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         P9 TCGPowerTools
 // @namespace    local.p9.tcgpowertools
-// @version      1.2.2
+// @version      1.2.3
 // @description  P9 tools for TCG PowerTools: label tracking import, stock cooldown control, native refresh, and legacy redirect protection.
 // @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/p9-tcgpowertools
 // @match        https://app.tcgpowertools.com/*
@@ -20,7 +20,7 @@
 (() => {
   'use strict';
 
-  const VERSION = '1.2.2';
+  const VERSION = '1.2.3';
   const TOOL_NAME = 'P9 TCGPowerTools';
   const AUTO_REFRESH_KEY = 'p9.tcg.tracking.autoRefresh';
   const STOCK_COOLDOWN_KEY = 'p9.tcg.tools.stockCooldownBypass';
@@ -746,7 +746,6 @@
       <dialog aria-labelledby="title" data-view="menu">
         <div class="head"><div><button id="back" type="button" hidden>← Back to Menu</button><h2 id="title">${TOOL_NAME}</h2></div><button id="close" type="button" aria-label="Close">×</button></div>
         <section id="menu-view">
-          <p class="muted">Choose an action.</p>
           <nav class="menu" aria-label="P9 tools menu">
             <button id="menu-tracking" class="primary" type="button">Add Tracking Number</button>
             <button id="menu-placeholder" type="button" disabled title="Reserved for a future feature">Placeholder</button>
@@ -765,7 +764,6 @@
           <small>Tracking is saved through the site's original actions and verified by reloading orders. Importing tracking does not change packed or sent statuses.</small>
         </section>
         <section id="settings-view" hidden>
-          <p class="muted">Preferences are shared by this script across the legacy and new domains.</p>
           <p id="new-domain-note" class="muted" hidden>The new domain currently supports the launcher and shared settings only. Stock and tracking actions remain disabled here.</p>
           <label class="setting"><input id="stay-legacy" type="checkbox"><span>Stay on Legacy App<small>Block automatic navigation from the legacy app to the new app's login-redirect page. Enabled by default; takes effect immediately on open legacy tabs.</small></span></label>
           <label class="setting"><input id="stock-cooldown" type="checkbox"><span>Allow stock refresh during cooldown<small>Unlock the native Refresh Stock button on the legacy Your Stock page. Uses the site's own loading, confirmation and error handling. Disabled by default.</small></span></label>

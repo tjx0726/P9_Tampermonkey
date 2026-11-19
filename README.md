@@ -12,7 +12,7 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 | Script | Version | Purpose | Install | Documentation |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | Process TCGPowerTools CSV export. | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
-| P9 TCGPowerTools | 1.2.2 | Tracking import, stock cooldown control, native order refresh, and default-on legacy redirect protection; new-domain launcher/settings | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
+| P9 TCGPowerTools | 1.2.3 | Tracking import, stock cooldown control, native order refresh, and default-on legacy redirect protection; new-domain launcher/settings | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
 | TCG PowerTools - Stay on Legacy App (compatibility only) | 1.0.3 | Retained for existing installations; now included in P9 TCGPowerTools | [Use merged plugin](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 

@@ -4,6 +4,10 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### P9 TCGPowerTools — 1.2.3
+
+- Remove the introductory helper text from the menu and Settings views.
+
 ### P9 TCGPowerTools — 1.2.2
 
 - Remove the recurring 1.5-second page task. Navigation and native DOM updates now synchronize the stock cooldown control without polling or changing launcher visibility.

@@ -15,7 +15,7 @@ An English Tampermonkey interface for TCG PowerTools. On the legacy app it impor
 2. Open [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) and confirm installation or update.
 3. Reload either supported domain and click **P9 TCGPowerTools** at the bottom right.
 
-Current version: **1.2.2**. The canonical folder is `p9-tcgpowertools`, the userscript is `p9-tcgpowertools.user.js`, and the package is `p9-tcgpowertools`. The script name and namespace are unchanged; homepage and update URLs now use the new directory. The former Raw URL retains a complete 1.2.1 migration copy so existing installations move to the new update URL. Disable any remaining older tracking copy and the separate **TCG PowerTools - Stay on Legacy App** script; keep one merged plugin enabled. A pasted or local copy without an update source needs a one-time installation through the link above. Future checks use `main` and follow Tampermonkey settings.
+Current version: **1.2.3**. The canonical folder is `p9-tcgpowertools`, the userscript is `p9-tcgpowertools.user.js`, and the package is `p9-tcgpowertools`. The script name and namespace are unchanged; homepage and update URLs now use the new directory. The former Raw URL retains a complete 1.2.1 migration copy so existing installations move to the new update URL. Disable any remaining older tracking copy and the separate **TCG PowerTools - Stay on Legacy App** script; keep one merged plugin enabled. A pasted or local copy without an update source needs a one-time installation through the link above. Future checks use `main` and follow Tampermonkey settings.
 
 ## Menu and use
 

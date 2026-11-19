@@ -15,7 +15,7 @@
 2. 打开[安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js)，确认安装或更新。
 3. 刷新任一支持的域名，点击右下角 **P9 TCGPowerTools**。
 
-当前版本：**1.2.2**。主目录为 `p9-tcgpowertools`，脚本文件为 `p9-tcgpowertools.user.js`，包名为 `p9-tcgpowertools`。脚本名称和 namespace 保持不变；主页及更新地址已切换到新目录。旧 Raw 地址保留完整的 1.2.1 迁移副本，已有安装更新后会跟随新地址。请停用仍存在的旧 tracking 副本和独立 **TCG PowerTools - Stay on Legacy App** 脚本，只保留一个合并插件启用。没有更新来源的粘贴或本地副本需通过上方链接安装一次，之后按 Tampermonkey 本地设置从 `main` 检查更新。
+当前版本：**1.2.3**。主目录为 `p9-tcgpowertools`，脚本文件为 `p9-tcgpowertools.user.js`，包名为 `p9-tcgpowertools`。脚本名称和 namespace 保持不变；主页及更新地址已切换到新目录。旧 Raw 地址保留完整的 1.2.1 迁移副本，已有安装更新后会跟随新地址。请停用仍存在的旧 tracking 副本和独立 **TCG PowerTools - Stay on Legacy App** 脚本，只保留一个合并插件启用。没有更新来源的粘贴或本地副本需通过上方链接安装一次，之后按 Tampermonkey 本地设置从 `main` 检查更新。
 
 ## 菜单与使用
 
