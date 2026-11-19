@@ -36,14 +36,6 @@ flowchart TD
 ```
 <!-- readme-skill:end installation -->
 
-<!-- readme-skill:begin migration -->
-## 从旧仓库迁移 TCG PowerTools 脚本
-
-[旧仓库](https://github.com/tjx0726/tcgpowertools-block-redirect) 保留原始文件路径，并提供迁移版本 **1.0.2**。旧安装仍可从旧地址检查更新；安装新版后，更新地址会切换到本仓库，之后只需维护这里的脚本。
-
-脚本名称和 namespace 保持不变。迁移要求旧安装具有有效的更新来源，且 Tampermonkey 允许更新；自动安装还取决于本地设置。没有更新来源的手动副本，需要点击上方链接安装一次。可在 Tampermonkey 中手动检查更新，安装后确认版本至少为 `1.0.2`，更新地址包含 `P9_Tampermonkey/main/tcgpowertools-block-redirect/`。
-<!-- readme-skill:end migration -->
-
 <!-- readme-skill:begin structure -->
 ## 文件结构
 

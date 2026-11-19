@@ -36,14 +36,6 @@ flowchart TD
 ```
 <!-- readme-skill:end installation -->
 
-<!-- readme-skill:begin migration -->
-## Migrate the TCG PowerTools script from its old repository
-
-The [old repository](https://github.com/tjx0726/tcgpowertools-block-redirect) retains the original file path and serves migration version **1.0.2**. Existing installations can still check that old URL; after installing the update, their update URLs point here, so future maintenance takes place in this repository.
-
-The script name and namespace are unchanged. Migration requires an installation with a working update source and updates enabled in Tampermonkey; automatic installation also depends on local settings. A manually pasted copy without an update source needs a one-time install through the link above. You can manually check for updates in Tampermonkey, then verify that the installed version is at least `1.0.2` and its update URL contains `P9_Tampermonkey/main/tcgpowertools-block-redirect/`.
-<!-- readme-skill:end migration -->
-
 <!-- readme-skill:begin structure -->
 ## Repository structure
 
