@@ -57,5 +57,7 @@ cd ../p9-tcgpowertools
 npm test
 ```
 
+On 2026-11-19, a Tabbit browser test with Tampermonkey 5.5.1 updated an existing 1.0.2 installation through its old update URL. After confirming the source and match changes, the same installation record became P9 TCGPowerTools 1.2.3 and stored the canonical update URL. Its disabled state was preserved. An already-installed active plugin remained enabled; only one copy was active after validation.
+
 Keep this complete **1.2.3** migration copy frozen. Future feature releases belong in `p9-tcgpowertools/`; migrated installations follow that canonical update URL. Do not remove the old file or reintroduce its installation link. The regression suite checks migration metadata, independent full-plugin startup, and coexistence in either load order.
 <!-- readme-skill:end maintenance -->
