@@ -5,7 +5,7 @@
 
 Prevent the legacy [TCG PowerTools](https://app.tcgpowertools.com/) page from navigating to `https://new.tcgpowertools.com/login-redirect`. Current version: **1.0.3**.
 
-This feature is now included, enabled by default, in [P9 TCGPowerTools](../tcgpowertools-tracking/README.md). Install the merged plugin for new setups and disable this separate script. The old file and update URL remain for compatibility; version 1.0.3 yields to the merged plugin when present, so the shared Settings control is authoritative.
+This feature is now included, enabled by default, in [P9 TCGPowerTools](../p9-tcgpowertools/README.md). Install the merged plugin for new setups and disable this separate script. The old file and update URL remain for compatibility; version 1.0.3 yields to the merged plugin when present, so the shared Settings control is authoritative.
 
 [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [Source](tcgpowertools-stay-on-legacy.user.js) · [Changelog](../CHANGELOG.md) · [Script catalog](../README.md)
 <!-- readme-skill:end hero -->

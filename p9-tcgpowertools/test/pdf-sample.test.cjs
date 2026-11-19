@@ -2,7 +2,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { readFile } = require('node:fs/promises');
 const { pathToFileURL } = require('node:url');
-const { extractPdf } = require('../tcgpowertools-royal-mail-tracking.user.js');
+const { extractPdf } = require('../p9-tcgpowertools.user.js');
 
 // PDFs and expected records stay outside the repository. Supply independently
 // checked expectations as a JSON array of { page, orderCode, cardmarketOrderId,

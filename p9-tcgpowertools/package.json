@@ -1,0 +1,9 @@
+{
+  "name": "p9-tcgpowertools",
+  "version": "1.2.1",
+  "private": true,
+  "scripts": {
+    "check": "node --check p9-tcgpowertools.user.js",
+    "test": "node --test test/*.test.cjs"
+  }
+}

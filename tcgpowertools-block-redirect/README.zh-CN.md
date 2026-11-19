@@ -5,7 +5,7 @@
 
 阻止旧版 [TCG PowerTools](https://app.tcgpowertools.com/) 页面跳转到 `https://new.tcgpowertools.com/login-redirect`。当前版本：**1.0.3**。
 
-此功能现已合并至 [P9 TCGPowerTools](../tcgpowertools-tracking/README.zh-CN.md)，默认开启。新安装请使用合并插件，并停用此独立脚本。旧文件和更新地址为兼容已有安装而保留；1.0.3 检测到合并插件时让出控制，由共享 Settings 决定是否拦截。
+此功能现已合并至 [P9 TCGPowerTools](../p9-tcgpowertools/README.zh-CN.md)，默认开启。新安装请使用合并插件，并停用此独立脚本。旧文件和更新地址为兼容已有安装而保留；1.0.3 检测到合并插件时让出控制，由共享 Settings 决定是否拦截。
 
 [安装脚本](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-block-redirect/tcgpowertools-stay-on-legacy.user.js) · [脚本源码](tcgpowertools-stay-on-legacy.user.js) · [更新记录](../CHANGELOG.md) · [返回脚本目录](../README.md)
 <!-- readme-skill:end hero -->

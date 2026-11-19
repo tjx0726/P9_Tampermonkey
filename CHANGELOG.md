@@ -4,6 +4,13 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 
 ## 2026-11-19
 
+### P9 TCGPowerTools — 1.2.1
+
+- Rename the canonical folder, userscript, package, test imports, and documented paths to `p9-tcgpowertools` / `p9-tcgpowertools.user.js`.
+- Point installation links, homepage, update URL, and download URL to the new canonical path; synchronize both README languages and related guides.
+- Retain a complete 1.2.1 migration copy at the former Raw URL so existing installations can move to the new update source without changing script identity or saved preferences.
+- Preserve all stock, tracking, redirect, and domain behavior from 1.2.0.
+
 ### P9 TCGPowerTools — 1.2.0
 
 - Rename the tracking tool to P9 TCGPowerTools at the owner's request, keeping its namespace and Raw update paths stable.
@@ -24,9 +31,9 @@ Versions are tracked separately for each userscript. Update checks use the `@ver
 - Synchronize the userscript, package, and documented versions at 1.1.2 so existing installations can receive the wording correction through automatic updates.
 - Preserve CSV processing rules, Cardmarket order-reference terminology, script identity, and update URLs.
 
-### tcgpowertools-tracking — 1.1.2
+### P9 TCGPowerTools — 1.1.2
 
-- Added the verified P9 Order Tools in its own script directory, with an English menu, PDF upload preview, batch tracking saves, and automatic refresh settings for native order actions.
+- Added the verified tracking tool in its own script directory, with an English menu, PDF upload preview, batch tracking saves, and automatic refresh settings for native order actions.
 - Support both the original combined reference and the split reference/SKU format, including the `20x PID (quantity)` prefix.
 - Preserve the script name and namespace, and point the homepage and update URLs to this repository's `main` branch. Local copies without an update source need a one-time installation through the new link.
 - Added independent English and Chinese guides, 27 unit checks using fictional data, and two PDF integration checks that use private local files.

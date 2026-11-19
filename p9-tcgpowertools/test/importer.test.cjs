@@ -3,7 +3,7 @@ const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const {
   parseLabelText, matchLabels, saveTracking, verifySaved, isOrderMutation,
-} = require('../tcgpowertools-royal-mail-tracking.user.js');
+} = require('../p9-tcgpowertools.user.js');
 
 const label = (extra = {}) => ({
   page: 1, orderCode: 'A04', cardmarketOrderId: '9900000004', trackingNumber: 'QM900000040GB', error: '', ...extra,
@@ -61,7 +61,7 @@ test('rejects multiple reference headings even if only one reference is valid', 
 });
 
 test('never takes a missing SKU from a different PDF page', async () => {
-  const { extractPdf } = require('../tcgpowertools-royal-mail-tracking.user.js');
+  const { extractPdf } = require('../p9-tcgpowertools.user.js');
   const text = [
     'QM900000040GB\nCustomer Ref: 90001 / 9900000004',
     'QM900000053GB\nCustomer Ref: 90002 / 9900000002\nSKU: A02 (7)',

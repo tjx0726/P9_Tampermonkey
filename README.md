@@ -12,8 +12,8 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 | Script | Version | Purpose | Install | Documentation |
 | --- | --- | --- | --- | --- |
 | P9 Royal Mail CSV Processor | 1.1.2 | Process TCGPowerTools CSV export. | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/royal-mail-csv/royal-mail-csv.user.js) | [English](royal-mail-csv/README.md) · [中文](royal-mail-csv/README.zh-CN.md) |
-| P9 TCGPowerTools | 1.2.0 | Tracking import, stock cooldown control, native order refresh, and default-on legacy redirect protection; new-domain launcher/settings | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-tracking/README.md) · [中文](tcgpowertools-tracking/README.zh-CN.md) |
-| TCG PowerTools - Stay on Legacy App (compatibility only) | 1.0.3 | Retained for existing installations; now included in P9 TCGPowerTools | [Use merged plugin](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
+| P9 TCGPowerTools | 1.2.1 | Tracking import, stock cooldown control, native order refresh, and default-on legacy redirect protection; new-domain launcher/settings | [Install script](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](p9-tcgpowertools/README.md) · [中文](p9-tcgpowertools/README.zh-CN.md) |
+| TCG PowerTools - Stay on Legacy App (compatibility only) | 1.0.3 | Retained for existing installations; now included in P9 TCGPowerTools | [Use merged plugin](https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js) | [English](tcgpowertools-block-redirect/README.md) · [中文](tcgpowertools-block-redirect/README.zh-CN.md) |
 <!-- readme-skill:end scripts -->
 
 <!-- readme-skill:begin installation -->
@@ -26,6 +26,8 @@ Tampermonkey userscripts for P9's internal use. Each script lives in its own fol
 If you previously installed a script by copying its source or from a local URL without an update source, install this repository's version once through the relevant link above to register its update URLs. Confirm an update if prompted, and keep only one enabled copy of each script.
 
 After installing **P9 TCGPowerTools**, disable the old-name tracking importer and the separate **Stay on Legacy App** script. The merged plugin includes the blocker. On `new.tcgpowertools.com`, it currently provides the launcher and shared settings only; stock and tracking actions remain disabled.
+
+The canonical folder and file are now `p9-tcgpowertools/p9-tcgpowertools.user.js`. The former update URL retains a migration copy; existing installations switch to the new URL after updating once.
 
 Each script's `@updateURL` and `@downloadURL` point to its own file on this repository's `main` branch. Tampermonkey compares `@version` at the locally configured interval and handles new versions according to the **Automatic installation** setting. Enable update checks in Tampermonkey and enable automatic installation if desired.
 
@@ -62,10 +64,14 @@ P9_Tampermonkey/
 │   ├── README.md
 │   ├── README.zh-CN.md
 │   └── tcgpowertools-stay-on-legacy.user.js
-└── tcgpowertools-tracking/
+├── tcgpowertools-tracking/  (migration only)
+│   ├── README.md
+│   ├── README.zh-CN.md
+│   └── tcgpowertools-royal-mail-tracking.user.js
+└── p9-tcgpowertools/
     ├── README.md
     ├── README.zh-CN.md
-    ├── tcgpowertools-royal-mail-tracking.user.js
+    ├── p9-tcgpowertools.user.js
     ├── package.json
     └── test/
         ├── importer.test.cjs
@@ -94,13 +100,13 @@ npm run check
 npm test
 ```
 
-Local checks for the tracking script:
+Local checks for P9 TCGPowerTools:
 
 ```sh
-cd tcgpowertools-tracking
+cd p9-tcgpowertools
 npm run check
 npm test
 ```
 
-The unit tests use Node.js's built-in test runner and require no npm dependencies. The tracking script's optional PDF integration checks require a local PDF.js module and private PDF/expectation files; see its guide. Installing and using the userscripts themselves requires neither Node.js nor a build step.
+The unit tests use Node.js's built-in test runner and require no npm dependencies. P9 TCGPowerTools' optional PDF integration checks require a local PDF.js module and private PDF/expectation files; see its guide. Installing and using the userscripts themselves requires neither Node.js nor a build step.
 <!-- readme-skill:end maintenance -->

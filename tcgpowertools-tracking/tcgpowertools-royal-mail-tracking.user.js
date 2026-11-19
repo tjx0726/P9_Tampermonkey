@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         P9 TCGPowerTools
 // @namespace    local.p9.tcgpowertools
-// @version      1.2.0
+// @version      1.2.1
 // @description  P9 tools for TCG PowerTools: label tracking import, stock cooldown control, native refresh, and legacy redirect protection.
-// @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/tcgpowertools-tracking
+// @homepageURL  https://github.com/tjx0726/P9_Tampermonkey/tree/main/p9-tcgpowertools
 // @match        https://app.tcgpowertools.com/*
 // @match        https://new.tcgpowertools.com/*
 // @run-at       document-start
@@ -13,14 +13,14 @@
 // @grant        unsafeWindow
 // @sandbox      raw
 // @noframes
-// @updateURL    https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js
-// @downloadURL  https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/tcgpowertools-tracking/tcgpowertools-royal-mail-tracking.user.js
+// @updateURL    https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js
+// @downloadURL  https://raw.githubusercontent.com/tjx0726/P9_Tampermonkey/main/p9-tcgpowertools/p9-tcgpowertools.user.js
 // ==/UserScript==
 
 (() => {
   'use strict';
 
-  const VERSION = '1.2.0';
+  const VERSION = '1.2.1';
   const TOOL_NAME = 'P9 TCGPowerTools';
   const AUTO_REFRESH_KEY = 'p9.tcg.tracking.autoRefresh';
   const STOCK_COOLDOWN_KEY = 'p9.tcg.tools.stockCooldownBypass';
